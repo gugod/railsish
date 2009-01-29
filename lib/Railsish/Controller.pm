@@ -63,11 +63,12 @@ sub render {
 
     my $tt = Template->new({
         INCLUDE_PATH => [ catdir(app_root, "app", "views") ],
-        PROCESS => "layout/application.html.tt2"
+        PROCESS => "layout/application.html.tt2",
+        ENCODING => 'utf8'
     });
 
     my $output = "";
-    $tt->process("${controller}/${action}.html.tt2", \%variables, \$output);
+    $tt->process((delete $variables{template} || "${controller}/${action}.html.tt2"), \%variables, \$output);
 
     $response->body($output);
 }
