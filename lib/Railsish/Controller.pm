@@ -45,6 +45,7 @@ sub dispatch {
 use Template;
 use File::Spec::Functions;
 use Binding;
+use Perl6::Junction qw(any);
 
 sub render {
     my (%variables) = @_;
@@ -64,7 +65,8 @@ sub render {
     for my $varname (keys %$caller_vars) {
         my $val = $caller_vars->{$varname};
         $varname =~ s/^[\$%@]//;
-        $val = $$val if ref($val) eq 'SCALAR';
+        $val = $$val if ref($val) eq any('SCALAR', 'REF');
+
         $variables{$varname} = $val;
     }
 
