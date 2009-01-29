@@ -37,16 +37,18 @@ sub dispatch {
 
     if ($self->can($action)) {
         $self->$action(@args);
-    } 
+    }
 
     return $response;
 }
 
 use Template;
 use File::Spec::Functions;
+use Binding;
 
 sub render {
     my (%variables) = @_;
+
     if (defined($format)) {
         my $renderer = __PACKAGE__->can("render_${format}");
         if ($renderer) {
@@ -55,6 +57,15 @@ sub render {
         }
         $response->status(500);
         $response->body("Unknown format: $format");
+    }
+
+    my $caller_vars = Binding->of_caller->our_vars;
+
+    for my $varname (keys %$caller_vars) {
+        my $val = $caller_vars->{$varname};
+        $varname =~ s/^[\$%@]//;
+        $val = $$val if ref($val) eq 'SCALAR';
+        $variables{$varname} = $val;
     }
 
     $variables{title} ||= ucfirst($controller) . " :: " .ucfirst($action);
@@ -83,11 +94,10 @@ sub render_json {
     $response->body($out);
 }
 
-# Provide a default 'index' 
+# Provide a default 'index'
 sub index {
     render;
 }
 
 
 1;
-
