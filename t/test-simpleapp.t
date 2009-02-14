@@ -1,9 +1,13 @@
 #!/usr/bin/env perl -w
 use strict;
-use lib 't/lib';
-use lib 't/SimpleApp/lib';
-
 use Cwd;
+
+BEGIN {
+    my $cwd = getcwd;
+    unshift @INC, "$cwd/t/lib";
+    unshift @INC, "$cwd/t/SimpleApp/lib";
+}
+
 use HTTP::Engine;
 use HTTP::Request;
 use Test::More tests => 1;
@@ -13,8 +17,6 @@ chdir("t/SimpleApp");
 use lib '../../lib';
 
 $ENV{APP_ROOT} = getcwd;
-
-use Data::Dump qw(pp);
 
 my $engine = HTTP::Engine->new(
     interface => {
