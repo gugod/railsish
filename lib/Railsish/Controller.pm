@@ -44,7 +44,7 @@ sub dispatch {
 
 use Template;
 use File::Spec::Functions;
-use Binding;
+use Binding 0.04;
 use Perl6::Junction qw(any);
 
 sub render {
