@@ -51,13 +51,13 @@ sub dispatch {
 
 1;
 
-=head1 SYNOPSIS
-
-    use Railsish;
-
 =head1 DESCRIPTION
 
-To be written.
+This is a web app framework that is still very experimental.
+
+=head1 EXAMPLE
+
+At this moment, see t/SimpleApp for how to use this web framework.
 
 =cut
 
