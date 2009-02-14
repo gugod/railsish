@@ -78,20 +78,25 @@ sub render {
 	$variables{$_} = $stash->{$_};
     }
 
-    $variables{title} ||= ucfirst($controller) . " :: " .ucfirst($action);
     $variables{controller} = \&controller;
-    $variables{action} = \&action;
+    $variables{action}	   = \&action;
+
+    $variables{title}    ||= ucfirst($controller) . " :: " .ucfirst($action);
+    $variables{layout}   ||= "layouts/application.html.tt2";
+    $variables{template} ||= "${controller}/${action}.html.tt2";
 
     my $tt = Template->new({
         INCLUDE_PATH => [ catdir(app_root, "app", "views") ],
-        PROCESS => $variables{layout} || "layout/application.html.tt2",
+        PROCESS => $variables{layout},
         ENCODING => 'utf8'
     });
 
     my $output = "";
-    $tt->process((delete $variables{template} || "${controller}/${action}.html.tt2"), \%variables, \$output);
+    $tt->process($variables{template}, \%variables, \$output)
+	|| die $tt->error();
     $response->body($output);
 }
+
 
 use JSON;
 sub render_json {

@@ -40,7 +40,7 @@ sub dispatch {
     $controller ||= 'welcome';
 
     my $controller_class = $app_package . "::" . ucfirst($controller) . "Controller";
-    $controller_class->require;
+    $controller_class->require or die $@;
 
     $controller_class->dispatch($request, $response);
 
