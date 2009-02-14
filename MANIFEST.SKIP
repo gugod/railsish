@@ -1,3 +1,4 @@
+^dist.ini$
 \bRCS\b
 \bCVS\b
 ^MANIFEST\.

@@ -1,4 +1,6 @@
 package Railsish;
+# ABSTRACT: A web application framework.
+
 use strict;
 use warnings;
 
@@ -48,4 +50,14 @@ sub dispatch {
 }
 
 1;
+
+=head1 SYNOPSIS
+
+    use Railsish;
+
+=head1 DESCRIPTION
+
+To be written.
+
+=cut
 

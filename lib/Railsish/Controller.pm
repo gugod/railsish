@@ -1,4 +1,5 @@
 package Railsish::Controller;
+# ABSTRACT: base class for webapp controllers.
 use strict;
 use warnings;
 
