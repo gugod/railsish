@@ -47,6 +47,18 @@ use File::Spec::Functions;
 use Binding 0.04;
 use Perl6::Junction qw(any);
 
+sub build_stash {
+    my $caller_vars = Binding->of_caller(2)->our_vars;
+    my $stash = {};
+    for my $varname (keys %$caller_vars) {
+        my $val = $caller_vars->{$varname};
+        $varname =~ s/^[\$%@]//;
+        $val = $$val if ref($val) eq any('SCALAR', 'REF');
+	$stash->{$varname} = $val;
+    }
+    return $stash;
+}
+
 sub render {
     my (%variables) = @_;
 
@@ -60,14 +72,10 @@ sub render {
         $response->body("Unknown format: $format");
     }
 
-    my $caller_vars = Binding->of_caller->our_vars;
+    my $stash = build_stash;
 
-    for my $varname (keys %$caller_vars) {
-        my $val = $caller_vars->{$varname};
-        $varname =~ s/^[\$%@]//;
-        $val = $$val if ref($val) eq any('SCALAR', 'REF');
-
-        $variables{$varname} = $val;
+    for (keys %$stash) {
+	$variables{$_} = $stash->{$_};
     }
 
     $variables{title} ||= ucfirst($controller) . " :: " .ucfirst($action);
@@ -76,13 +84,12 @@ sub render {
 
     my $tt = Template->new({
         INCLUDE_PATH => [ catdir(app_root, "app", "views") ],
-        PROCESS => "layout/application.html.tt2",
+        PROCESS => $variables{layout} || "layout/application.html.tt2",
         ENCODING => 'utf8'
     });
 
     my $output = "";
     $tt->process((delete $variables{template} || "${controller}/${action}.html.tt2"), \%variables, \$output);
-
     $response->body($output);
 }
 
