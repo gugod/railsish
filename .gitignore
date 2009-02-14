@@ -6,3 +6,5 @@ inc/
 Makefile
 cover_db/
 covered/
+.build/
+
