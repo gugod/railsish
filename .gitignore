@@ -7,4 +7,6 @@ Makefile
 cover_db/
 covered/
 .build/
+Railsish-*/
+Railsish-*.tar.gz
 
