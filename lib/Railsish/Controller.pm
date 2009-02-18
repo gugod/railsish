@@ -3,6 +3,8 @@ package Railsish::Controller;
 use strict;
 use warnings;
 
+use Railsish::CoreHelpers;
+
 my ($request, $response, $controller, $action, $format);
 
 sub request() { $request }
@@ -10,7 +12,6 @@ sub response() { $response }
 sub controller() { $controller }
 sub action() { $action }
 sub format() { $format }
-sub app_root { $ENV{APP_ROOT} }
 
 sub import {
     my $class = shift;
