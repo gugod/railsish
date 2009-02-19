@@ -19,10 +19,6 @@ sub import {
     }
 }
 
-sub app_root {
-    $ENV{APP_ROOT}
-}
-
 sub handle_request {
     {
         require Module::Refresh;
