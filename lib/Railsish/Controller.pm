@@ -4,6 +4,7 @@ use strict;
 use warnings;
 
 use Railsish::CoreHelpers;
+use Railsish::ViewHelpers;
 
 my ($request, $response, $controller, $action, $format);
 
@@ -82,6 +83,7 @@ sub render {
 
     $variables{controller} = \&controller;
     $variables{action}	   = \&action;
+    $variables{stylesheet_link_tag} = \&Railsish::ViewHelpers::stylesheet_link_tag;;
 
     $variables{title}    ||= ucfirst($controller) . " :: " .ucfirst($action);
     $variables{layout}   ||= "layouts/application.html.tt2";
