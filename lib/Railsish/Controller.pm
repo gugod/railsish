@@ -83,7 +83,7 @@ sub render {
 
     $variables{controller} = \&controller;
     $variables{action}	   = \&action;
-    $variables{stylesheet_link_tag} = \&Railsish::ViewHelpers::stylesheet_link_tag;;
+    $variables{stylesheet_link_tag} = \&Railsish::ViewHelpers::stylesheet_link_tag;
 
     $variables{title}    ||= ucfirst($controller) . " :: " .ucfirst($action);
     $variables{layout}   ||= "layouts/application.html.tt2";
