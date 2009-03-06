@@ -6,7 +6,6 @@ use warnings;
 
 use HTTP::Engine::Response;
 use UNIVERSAL::require;
-use Module::Refresh;
 
 my $app_package;
 
@@ -20,15 +19,6 @@ sub import {
 }
 
 sub handle_request {
-    {
-        require Module::Refresh;
-        Module::Refresh->refresh;
-    };
-
-    &dispatch;
-}
-
-sub dispatch {
     my $request = shift;
     my $response = HTTP::Engine::Response->new;
 
