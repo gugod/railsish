@@ -11,17 +11,25 @@ use Log::Dispatch;
 use Log::Dispatch::File;
 
 use File::Spec::Functions;
-    
+
 sub app_root {
     catfile($ENV{APP_ROOT}, @_)
 }
 
 {
-    my $file = app_root(log => "debug.log");
-    my $logger = Log::Dispatch->new;
-    $logger->add(
-	Log::Dispatch::File->new(name => "debug", min_level => "debug", filename => $file)
-    );
+    use Data::Thunk;
+
+    my $logger = lazy {
+	my $file = app_root(log => "debug.log");
+	my $logger = Log::Dispatch->new;
+	$logger->add(
+	    Log::Dispatch::File->new(
+		name => "debug",
+		min_level => "debug",
+		filename => $file));
+
+	$logger;
+    };
 
     sub logger { $logger }
 }
