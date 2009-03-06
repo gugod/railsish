@@ -5,6 +5,7 @@ use warnings;
 
 use Railsish::CoreHelpers;
 use Railsish::ViewHelpers;
+use Encode;
 
 my ($request, $response, $controller, $action, $format);
 
@@ -100,7 +101,8 @@ sub render {
     my $output = "";
     $tt->process($variables{template}, \%variables, \$output)
 	|| die $tt->error();
-    $response->body($output);
+
+    $response->body(Encode::encode_utf8($output));
 }
 
 
@@ -111,7 +113,7 @@ sub render_json {
     my $out = to_json(\%variables);
 
     $response->headers->header('Content-Type' => 'text/x-json');
-    $response->body($out);
+    $response->body( Encode::encode_utf8($out) );
 }
 
 # Provide a default 'index'
