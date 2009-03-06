@@ -36,11 +36,11 @@ sub dispatch {
 
     my $path    = $request->request_uri;
 
+    $format = $1 if $path =~ s/\.(....?)$//;
+
     my @args    = split "/", $path; shift @args; # discard the first undef
     $controller = shift @args || 'welcome';
     $action     = shift @args || 'index';
-
-    $format = $1 if $action =~ s/\.(....?)$//;
 
     if ($self->can($action)) {
         $self->$action(@args);
