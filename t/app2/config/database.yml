@@ -1,0 +1,3 @@
+test:
+  dsn: dbi:SQLite:dbname=railsish-app2-test.sqlite3
+
