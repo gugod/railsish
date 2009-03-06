@@ -27,16 +27,19 @@ sub import {
     *{"$caller\::action"}     = \&action;
     *{"$caller\::format"}     = \&format;
     *{"$caller\::render"}     = \&render;
+    *{"$caller\::render_json"} = \&render_json;
 }
 
 sub dispatch {
     (my $self, $request, $response) = @_;
 
     my $path    = $request->request_uri;
-    ($format)   = $path =~ /\.(....?)$/;
+
     my @args    = split "/", $path; shift @args; # discard the first undef
     $controller = shift @args || 'welcome';
     $action     = shift @args || 'index';
+
+    $format = $1 if $action =~ s/\.(....?)$//;
 
     if ($self->can($action)) {
         $self->$action(@args);
@@ -64,6 +67,11 @@ sub build_stash {
 
 sub render {
     my (%variables) = @_;
+    my $stash = build_stash;
+
+    for (keys %$stash) {
+	$variables{$_} = $stash->{$_};
+    }
 
     if (defined($format)) {
         my $renderer = __PACKAGE__->can("render_${format}");
@@ -73,12 +81,6 @@ sub render {
         }
         $response->status(500);
         $response->body("Unknown format: $format");
-    }
-
-    my $stash = build_stash;
-
-    for (keys %$stash) {
-	$variables{$_} = $stash->{$_};
     }
 
     $variables{controller} = \&controller;
