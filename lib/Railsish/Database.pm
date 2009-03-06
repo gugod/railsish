@@ -20,7 +20,7 @@ has 'dsn' => (
 );
 
 has 'kioku' => (
-    is => "ro",
+    is => "rw",
     lazy_build => 1
 );
 
@@ -43,8 +43,29 @@ sub _build_dsn {
 
 sub _build_kioku {
     my $self = shift;
-    $self->config->{development}
-    return KiokuDB->connect($self->dsn, create => 1);
+    my $config = $self->config;
+
+    return KiokuDB->connect(
+	$self->dsn,
+	create => 1,
+	user => $config->{user},
+	password => $config->{password}
+    );
+}
+
+sub search {
+    my ($self, @args) = @_;
+    my $kioku = $self->kioku;
+    my $kioku_scope = $kioku->new_scope;
+
+    $kioku->search({ (@args) });
+}
+
+sub store {
+    my ($self, $obj) = @_;
+    my $kioku = $self->kioku;
+    my $kioku_scope = $kioku->new_scope;
+    $kioku->store($obj);
 }
 
 __PACKAGE__->meta->make_immutable;
