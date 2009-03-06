@@ -31,18 +31,19 @@ sub _build_config {
     die "config/database.yml does not exist\n"
 	unless -f $file;
 
-    return LoadFile($file);
+    my $all_config = LoadFile($file);
+    return $all_config->{development};
 }
 
 sub _build_dsn {
     my $self = shift;
-    my $dsn = $ENV{SUDA_TEST_DSN} ||
-	$self->config->{development}{dsn};
+    my $dsn = $ENV{RAILSISH_TEST_DSN} || $self->config->{dsn};
     return $dsn;
 }
 
 sub _build_kioku {
     my $self = shift;
+    $self->config->{development}
     return KiokuDB->connect($self->dsn, create => 1);
 }
 
