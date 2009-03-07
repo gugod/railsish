@@ -16,22 +16,14 @@ sub app_root {
     catfile($ENV{APP_ROOT}, @_)
 }
 
+use Railsish::Logger;
 {
-    use Data::Thunk;
-
-    my $logger = lazy {
-	my $file = app_root(log => "debug.log");
-	my $logger = Log::Dispatch->new;
-	$logger->add(
-	    Log::Dispatch::File->new(
-		name => "debug",
-		min_level => "debug",
-		filename => $file));
-
-	$logger;
-    };
-
-    sub logger { $logger }
+    my $logger;
+    sub logger {
+	return $logger if defined($logger);
+	$logger = Railsish::Logger->new;
+	return $logger;
+    }
 }
 
 1;

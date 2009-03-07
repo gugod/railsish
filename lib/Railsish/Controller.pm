@@ -6,6 +6,7 @@ use warnings;
 use Railsish::CoreHelpers;
 use Railsish::ViewHelpers;
 use Encode;
+use YAML qw(Dump);
 
 my ($request, $response, $controller, $action, $format);
 
@@ -41,6 +42,13 @@ sub dispatch {
     my @args    = split "/", $path; shift @args; # discard the first undef
     $controller = shift @args || 'welcome';
     $action     = shift @args || 'index';
+
+    logger->debug(Dump({
+	request => $path,
+	controller => $controller,
+	action => $action,
+	params => $request->parameters
+    }));
 
     if ($self->can($action)) {
         $self->$action(@args);
