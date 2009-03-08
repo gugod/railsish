@@ -4,7 +4,7 @@ use strict;
 use warnings;
 
 use Railsish::CoreHelpers;
-use Railsish::ViewHelpers;
+use Railsish::ViewHelpers ();
 use Encode;
 use YAML qw(Dump);
 
@@ -94,7 +94,10 @@ sub render {
 
     $variables{controller} = \&controller;
     $variables{action}	   = \&action;
-    $variables{stylesheet_link_tag} = \&Railsish::ViewHelpers::stylesheet_link_tag;
+
+    for (@Railsish::ViewHelpers::EXPORT) {
+	$variables{$_} = \&{"Railsish::ViewHelpers::$_"};
+    }
 
     $variables{title}    ||= ucfirst($controller) . " :: " .ucfirst($action);
     $variables{layout}   ||= "layouts/application.html.tt2";
