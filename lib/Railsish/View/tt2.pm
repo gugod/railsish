@@ -21,7 +21,7 @@ sub render {
     }
 
     my $output = "";
-    $tt->process($vars{template}, \%vars, \$output)
+    $tt->process($vars{file}, \%vars, \$output)
 	|| die $tt->error();
 
     return $output;

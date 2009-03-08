@@ -11,10 +11,12 @@ use Railsish::ViewHelpers ();
 require UNIVERSAL::require;
 
 sub render {
-    my ($self, %vars) = @_;
+    my ($self, @args) = @_;
 
-    unless ( $vars{template} =~ m/\.(\w+)$/ ) {
-	die "Don't know how to render $vars{template}\n";
+    my %vars = @args;
+
+    unless ( $vars{file} =~ m/\.(\w+)$/ ) {
+	die "Don't know how to render $vars{file}\n";
     }
     my $view_class = "Railsish::View::$1";
     $view_class->require or die $@;

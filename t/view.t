@@ -9,7 +9,7 @@ my $view = Railsish::View->new(
     template_root => "$Bin/app2/app/views"
 );
 
-my $html = $view->render(template => "welcome/index.html.tt2");
+my $html = $view->render(file => "welcome/index.html.tt2");
 
 like $html, qr/Welcome/;
 
