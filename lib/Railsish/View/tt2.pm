@@ -8,13 +8,19 @@ use Template;
 sub render {
     my ($self, %vars) = @_;
 
-    $vars{layout} ||= "layouts/application.html.tt2";
+    unless (exists $vars{layout}) {
+        $vars{layout} = "layouts/application.html.tt2";
+    }
 
-    my $tt = Template->new({
+    my $template_config = {
         INCLUDE_PATH => [ $self->template_root ],
         PROCESS => $vars{layout},
         ENCODING => 'utf8'
-    });
+    };
+
+    delete $template_config->{PROCESS} unless defined $vars{layout};
+
+    my $tt = Template->new($template_config);
 
     for (@Railsish::ViewHelpers::EXPORT) {
 	$vars{$_} = \&{"Railsish::ViewHelpers::$_"};
