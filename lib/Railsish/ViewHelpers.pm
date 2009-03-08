@@ -2,6 +2,7 @@ package Railsish::ViewHelpers;
 use strict;
 use warnings;
 use Railsish::CoreHelpers;
+use HTML::Entities;
 
 sub stylesheet_link_tag {
     my (@css) = @_;
@@ -33,9 +34,9 @@ sub link_to {
     my ($label, $url, %attr) = @_;
     my $attr = "";
     if (%attr) {
-	$attr = " $_=\"$attr{$_}\"" for keys %attr;
+	$attr = qq{ $_="@{[ encode_entities($attr{$_}) ]}"} for keys %attr;
     }
-    qq{<a href="$url"$attr>$label</a>};
+    qq{<a href="$url"$attr>@{[ encode_entities($label) ]}</a>};
 }
 
 1;
