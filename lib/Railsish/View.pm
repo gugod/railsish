@@ -1,6 +1,5 @@
 package Railsish::View;
 use Moose;
-use Template;
 
 has template_root => (
     is => "ro",
@@ -9,25 +8,22 @@ has template_root => (
 );
 
 use Railsish::ViewHelpers ();
+require UNIVERSAL::require;
 
 sub render {
     my ($self, %vars) = @_;
 
-    $vars{layout} ||= "layouts/application.html.tt2";
-
-    my $tt = Template->new({
-        INCLUDE_PATH => [ $self->template_root ],
-        PROCESS => $vars{layout},
-        ENCODING => 'utf8'
-    });
-
-    for (@Railsish::ViewHelpers::EXPORT) {
-	$vars{$_} = \&{"Railsish::ViewHelpers::$_"};
+    unless ( $vars{template} =~ m/\.(\w+)$/ ) {
+	die "Don't know how to render $vars{template}\n";
     }
+    my $view_class = "Railsish::View::$1";
+    $view_class->require or die $@;
     
-    my $output = "";
-    $tt->process($vars{template}, \%vars, \$output)
-	|| die $tt->error();
+    my $view_obj = $view_class->new(
+	template_root => $self->template_root
+    );
+
+    my $output = $view_obj->render(%vars);
 
     return $output;
 }
