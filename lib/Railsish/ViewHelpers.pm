@@ -5,7 +5,7 @@ use Railsish::CoreHelpers;
 use HTML::Entities;
 
 use Exporter::Lite;
-our @EXPORT = qw(stylesheet_link_tag link_to);
+our @EXPORT = qw(stylesheet_link_tag javascript_include_tag link_to);
 
 sub stylesheet_link_tag {
     my (@css) = @_;
@@ -32,6 +32,25 @@ sub stylesheet_link_tag {
     }
     return $out;
 };
+
+sub javascript_include_tag {
+    my @sources = @_;
+    my $out = "";
+    for my $source (@sources) {
+        my $uri;
+        if ($source =~ /^\w+:\/\//) {
+            $uri = $source;
+        }
+        else {
+            $uri = $source;
+            $uri .= ".js" if $source !~ /\./;
+            $uri = "/javascripts/$uri" if $source !~ /\//;
+        }
+
+        $out .= qq{<script type="text/javascript" src="$uri"></script>\n};
+    }
+    return $out;
+}
 
 sub link_to {
     my ($label, $url, %attr) = @_;
