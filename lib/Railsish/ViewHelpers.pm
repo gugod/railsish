@@ -37,9 +37,9 @@ sub link_to {
     my ($label, $url, %attr) = @_;
     my $attr = "";
     if (%attr) {
-	$attr = qq{ $_="@{[ encode_entities($attr{$_}) ]}"} for keys %attr;
+	$attr = qq{ $_="@{[ encode_entities($attr{$_}, '<>&"') ]}"} for keys %attr;
     }
-    qq{<a href="$url"$attr>@{[ encode_entities($label) ]}</a>};
+    qq{<a href="$url"$attr>@{[ encode_entities($label, '<>&') ]}</a>};
 }
 
 1;
