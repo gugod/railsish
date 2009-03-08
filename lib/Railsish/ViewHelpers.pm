@@ -29,4 +29,13 @@ sub stylesheet_link_tag {
     return $out;
 };
 
+sub link_to {
+    my ($label, $url, %attr) = @_;
+    my $attr = "";
+    if (%attr) {
+	$attr = " $_=\"$attr{$_}\"" for keys %attr;
+    }
+    qq{<a href="$url"$attr>$label</a>};
+}
+
 1;
