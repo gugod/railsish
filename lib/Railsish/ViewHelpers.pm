@@ -4,6 +4,9 @@ use warnings;
 use Railsish::CoreHelpers;
 use HTML::Entities;
 
+use Exporter::Lite;
+our @EXPORT = qw(stylesheet_link_tag link_to);
+
 sub stylesheet_link_tag {
     my (@css) = @_;
 
