@@ -75,5 +75,12 @@ __PACKAGE__->meta->make_immutable;
 
 =head1 DESCRIPTION
 
+Convention:
+
+    file comes with suffixes, template does not.
+
+    file: "foo/bar.html.tt2"
+    template "foo/bar"
+
 
 =cut
