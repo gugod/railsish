@@ -37,7 +37,11 @@ sub dispatch {
 
     my $path    = $request->request_uri;
 
-    $format = $1 if $path =~ s/\.(....?)$//;
+    if ($path =~ s/\.(....?)$//) {
+        $format = $1
+    } else {
+        $format = "html";
+    }
 
     my @args    = split "/", $path; shift @args; # discard the first undef
     $controller = shift @args || 'welcome';
@@ -117,11 +121,14 @@ sub render {
 }
 
 
-use JSON;
+use JSON -convert_blessed_universally;
 sub render_json {
     my %variables = @_;
 
-    my $out = to_json(\%variables);
+    my $json = JSON->new;
+    $json->allow_blessed(1);
+
+    my $out = $json->encode(\%variables);
 
     $response->headers->header('Content-Type' => 'text/x-json');
     $response->body( Encode::encode_utf8($out) );
