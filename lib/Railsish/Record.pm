@@ -23,6 +23,11 @@ sub find_all {
     db->search(CLASS => (ref($self) || $self), @args);
 }
 
+sub id {
+    my ($self) = @_;
+    return db->object_to_id($self);
+}
+
 sub save {
     my ($self) = @_;
     db->store($self);

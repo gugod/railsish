@@ -68,6 +68,13 @@ sub store {
     $kioku->store($obj);
 }
 
+sub object_to_id {
+    my ($self, $obj) = @_;
+    my $kioku = $self->kioku;
+    my $kioku_scope = $kioku->new_scope;
+    return $kioku->object_to_id($obj);
+}
+
 __PACKAGE__->meta->make_immutable;
 
 1;
