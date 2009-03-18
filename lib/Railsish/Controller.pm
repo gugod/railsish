@@ -35,7 +35,7 @@ sub import {
 sub dispatch {
     (my $self, $request, $response) = @_;
 
-    my $path    = $request->request_uri;
+    my $path    = $request->path;
 
     if ($path =~ s/\.(....?)$//) {
         $format = $1
