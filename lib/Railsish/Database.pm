@@ -61,11 +61,32 @@ sub search {
     $kioku->search({ (@args) });
 }
 
+sub lookup {
+    my ($self, @ids) = @_;
+    my $kioku = $self->kioku;
+    my $kioku_scope = $kioku->new_scope;
+
+    return $kioku->lookup(@ids);
+}
+
 sub store {
     my ($self, $obj) = @_;
     my $kioku = $self->kioku;
     my $kioku_scope = $kioku->new_scope;
     $kioku->store($obj);
+}
+
+sub object_to_id {
+    my ($self, $obj) = @_;
+    my $kioku = $self->kioku;
+    my $kioku_scope = $kioku->new_scope;
+    return $kioku->object_to_id($obj);
+}
+
+sub delete {
+    my ($self, $obj) = @_;
+    my $kioku = $self->kioku;
+    $kioku->delete($obj);
 }
 
 __PACKAGE__->meta->make_immutable;

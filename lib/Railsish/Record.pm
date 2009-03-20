@@ -18,9 +18,19 @@ has created_at => (
     }
 }
 
+sub find {
+    my ($self, $id) = @_;
+    db->lookup($id);
+}
+
 sub find_all {
     my ($self, @args) = @_;
     db->search(CLASS => (ref($self) || $self), @args);
+}
+
+sub id {
+    my ($self) = @_;
+    return db->object_to_id($self);
 }
 
 sub save {
@@ -28,6 +38,10 @@ sub save {
     db->store($self);
 }
 
+sub delete {
+    my ($self) = @_;
+    db->delete($self);
+}
 
 __PACKAGE__->meta->make_immutable;
 
