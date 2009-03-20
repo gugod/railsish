@@ -62,14 +62,16 @@ sub link_to {
 }
 
 use Railsish::ControllerHelpers ();
-use YAML;
-sub render_stickies {
-    my $out = '<div id="notice_stickies" class="message notice">';
 
-    for (@Railsish::ControllerHelpers::notice_stickies) {
-        $out .= "<p>" . $_->{text} . "</p>";
+sub render_stickies {
+    my $out = "";
+    if (@Railsish::ControllerHelpers::notice_stickies > 0) {
+        $out = '<div id="notice_stickies" class="message notice">';
+        for (@Railsish::ControllerHelpers::notice_stickies) {
+            $out .= "<p>" . $_->{text} . "</p>";
+        }
+        $out .= "</div>";
     }
-    $out .= "</div>";
 
     @Railsish::ControllerHelpers::notice_stickies = ();
     return $out;
