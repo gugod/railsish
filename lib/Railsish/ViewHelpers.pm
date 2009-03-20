@@ -5,7 +5,7 @@ use Railsish::CoreHelpers;
 use HTML::Entities;
 
 use Exporter::Lite;
-our @EXPORT = qw(stylesheet_link_tag javascript_include_tag link_to);
+our @EXPORT = qw(render_stickies stylesheet_link_tag javascript_include_tag link_to);
 
 sub stylesheet_link_tag {
     my (@css) = @_;
@@ -59,6 +59,20 @@ sub link_to {
 	$attr = qq{ $_="@{[ encode_entities($attr{$_}, '<>&"') ]}"} for keys %attr;
     }
     qq{<a href="$url"$attr>@{[ encode_entities($label, '<>&') ]}</a>};
+}
+
+use Railsish::ControllerHelpers ();
+use YAML;
+sub render_stickies {
+    my $out = '<div id="notice_stickies" class="message notice">';
+
+    for (@Railsish::ControllerHelpers::notice_stickies) {
+        $out .= "<p>" . $_->{text} . "</p>";
+    }
+    $out .= "</div>";
+
+    @Railsish::ControllerHelpers::notice_stickies = ();
+    return $out;
 }
 
 1;

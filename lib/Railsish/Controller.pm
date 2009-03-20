@@ -5,6 +5,7 @@ use warnings;
 
 use Railsish::CoreHelpers;
 use Railsish::ViewHelpers ();
+use Railsish::ControllerHelpers ();
 use Encode;
 use YAML qw(Dump);
 
@@ -30,6 +31,10 @@ sub import {
     *{"$caller\::format"}     = \&format;
     *{"$caller\::render"}     = \&render;
     *{"$caller\::render_json"} = \&render_json;
+
+    for (@Railsish::ControllerHelpers::EXPORT) {
+        *{"$caller\::$_"} = *{"Railsish::ControllerHelpers::$_"};
+    }
 }
 
 sub dispatch {
