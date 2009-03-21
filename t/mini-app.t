@@ -9,36 +9,41 @@ use Railsish::Controller;
 use Test::More;
 
 sub bar {
-    is(params("id"), "baz");
+    response->body( params("id") );
 }
 
 package main;
-use HTTP::Engine::Request;
-use HTTP::Engine::RequestBuilder::NoEnv;
-
-use IO::String;
-
 use Railsish::Router;
-use Railsish::Dispatcher;
 
 Railsish::Router->draw(
     sub {
         my ($map) = @_;
-        $map->connect("/:controller/:action/:id")
+        $map->connect("/:controller/:action/:id");
+        $map->connect("/:controller/:action");
+        $map->connect("/:controller", action => 'index');
+
+        $map->connect("", controller => "foo");
     }
 );
 
-my $in = IO::String->new;
-my $out = IO::String->new;
+use Railsish::Dispatcher;
+use HTTP::Engine;
 
-my $request = HTTP::Engine::Request->new(
-    request_builder => "HTTP::Engine::RequestBuilder::NoEnv",
-    uri => "/foo/bar/baz",
-    headers => {},
-    _connection => {
-        input_handle => $in,
-        output_handle => $out,
-    },
+use HTTP::Request;
+
+my $response = HTTP::Engine->new(
+    interface => {
+        module => "Test",
+        request_handler => sub {
+            Railsish::Dispatcher->dispatch(@_);
+        }
+    }
+)->run(
+    HTTP::Request->new(
+        GET => "http://localhost/foo/bar/baz"
+    )
 );
 
-Railsish::Dispatcher->dispatch($request);
+# The returned $response is a HTTP::Response object
+
+is($response->content, "baz");
