@@ -43,6 +43,4 @@ sub delete {
     db->delete($self);
 }
 
-no Mouse;
-
-1;
+__PACKAGE__->meta->make_immutable;

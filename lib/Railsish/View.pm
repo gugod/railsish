@@ -61,9 +61,8 @@ sub resolve_template {
     return $file;
 }
 
-no Mouse;
+__PACKAGE__->meta->make_immutable;
 
-1;
 
 =head1 SYNOPSIS
 

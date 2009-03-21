@@ -50,6 +50,4 @@ sub draw {
     return $APP_ROUTER;
 }
 
-no Mouse;
-
-1;
+__PACKAGE__->meta->make_immutable;

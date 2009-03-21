@@ -89,6 +89,5 @@ sub delete {
     $kioku->delete($obj);
 }
 
-no Mouse;
+__PACKAGE__->meta->make_immutable;
 
-1;
