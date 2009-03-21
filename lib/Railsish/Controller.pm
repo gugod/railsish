@@ -9,13 +9,18 @@ use Railsish::ControllerHelpers ();
 use Encode;
 use YAML qw(Dump);
 
-my ($request, $response, $controller, $action, $format);
+our ($request, $response, $controller, $action, $format, $params);
 
 sub request() { $request }
 sub response() { $response }
 sub controller() { $controller }
 sub action() { $action }
 sub format() { $format }
+
+sub params {
+    my $name = shift;
+    return defined($name) ? $params->{$name} : $params;
+}
 
 sub import {
     my $class = shift;
@@ -29,6 +34,7 @@ sub import {
     *{"$caller\::controller"} = \&controller;
     *{"$caller\::action"}     = \&action;
     *{"$caller\::format"}     = \&format;
+    *{"$caller\::params"}     = \&params;
     *{"$caller\::render"}     = \&render;
     *{"$caller\::render_json"} = \&render_json;
 
