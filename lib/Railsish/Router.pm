@@ -78,4 +78,21 @@ sub draw {
     return $APP_ROUTER;
 }
 
+use Sub::Install;
+
+our $AUTOLOAD;
+sub AUTOLOAD {
+    my ($self, $uri) = @_;
+    $self = $APP_ROUTER unless ref($self);
+
+    my $name = $AUTOLOAD;
+    $name =~ s/^.*:://;
+
+    Sub::Install::install_sub({
+        into => __PACKAGE__,
+        code => sub { return $uri },
+        as => "${name}_path"
+    });
+}
+
 __PACKAGE__->meta->make_immutable;
