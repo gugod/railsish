@@ -1,5 +1,8 @@
 Revision history for Perl extension Railsish
 
+0.21:
+- Implement named route
+
 0.20:
 - Implements routing ruels
 - Implements dispatcher
