@@ -1,11 +1,10 @@
 #!/usr/bin/env perl -w
 use strict;
-use Test::More tests => 1;
-use YAML;
+use Test::More tests => 4;
 
-use Railsish::Router::Route;
+use Railsish::Router;
 
-Railsish::Router::Route->draw(
+Railsish::Router->draw(
     sub {
 	my ($map) = @_;
 
@@ -14,10 +13,12 @@ Railsish::Router::Route->draw(
 	    controller => "users",
 	    action => "dashboard"
 	);
+
+        $map->connect("/:controller/:action/:id");
     }
 );
 
-my $uri = Railsish::Router::Route::uri_for(
+my $uri = Railsish::Router->uri_for(
     controller => "users",
     action => "dashboard",
     year => "3009",
@@ -26,3 +27,15 @@ my $uri = Railsish::Router::Route::uri_for(
 );
 
 is($uri, "dashboard/3009/12/23");
+
+my $matched = Railsish::Router->match("/admin/show/123");
+
+if ($matched) {
+    my $mapping = $matched->mapping;
+    is $mapping->{controller}, "admin";
+    is $mapping->{action}, "show";
+    is $mapping->{id}, "123";
+}
+else {
+    fail "Not maching" for 1..3;
+}
