@@ -9,8 +9,15 @@ has "routers" => (
     lazy_build => 1,
 );
 
+has named_paths => (
+    is => "rw",
+    isa => "HashRef",
+    default => sub {{}}
+);
+
 sub _build_routers {
     return {
+        _named => Path::Router->new,
         get    => Path::Router->new,
         post   => Path::Router->new,
         put    => Path::Router->new,
@@ -25,18 +32,19 @@ sub connect {
     $self = $APP_ROUTER unless ref($self);
 
     my $routers = $self->routers;
-
+    my @routes;
     if (my $conditions = delete $vars{conditions}) {
         my $method = lc($conditions->{method});
-        $routers->{$method}->add_route($urlish => (defaults => \%vars));
+        push @routes, $routers->{$method}->add_route($urlish => (defaults => \%vars));
     }
     else {
         for(qw(get post put delete)) {
-            $routers->{$_}->add_route($urlish => (defaults => \%vars));
+            push @routes, $routers->{$_}->add_route($urlish => (defaults => \%vars));
         }
     }
-
+    return @routes;
 }
+
 use YAML;
 sub match {
     my ($self, $uri, %args) = @_;
@@ -62,9 +70,9 @@ sub uri_for {
     $self = $APP_ROUTER unless ref($self);
 
     my $routers = $self->routers;
-    for (qw(get post put delete)) {
+    for (qw(_named get post put delete)) {
         if (my $url = $routers->{$_}->uri_for(@args)) {
-            return $url;
+            return "/$url";
         }
     }
 }
@@ -82,15 +90,22 @@ use Sub::Install;
 
 our $AUTOLOAD;
 sub AUTOLOAD {
-    my ($self, $uri) = @_;
+    my ($self, $urlish, %vars) = @_;
     $self = $APP_ROUTER unless ref($self);
 
     my $name = $AUTOLOAD;
     $name =~ s/^.*:://;
 
+    $self->routers->{_named}->add_route($urlish => (defaults => \%vars));
+
     Sub::Install::install_sub({
         into => __PACKAGE__,
-        code => sub { return $uri },
+        code => sub {
+            my ($self, @args) = @_;
+            $self = $APP_ROUTER unless ref($self);
+
+            return "/" . $self->routers->{_named}->uri_for(@args);
+        },
         as => "${name}_path"
     });
 }

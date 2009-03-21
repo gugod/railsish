@@ -26,7 +26,7 @@ my $uri = Railsish::Router->uri_for(
     date => "23"
 );
 
-is($uri, "dashboard/3009/12/23");
+is($uri, "/dashboard/3009/12/23");
 
 {
     my $matched = Railsish::Router->match("/admin/show/123");
