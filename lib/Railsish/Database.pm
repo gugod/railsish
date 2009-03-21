@@ -1,7 +1,7 @@
 package Railsish::Database;
 # ABSTRACT: Talks to database
 
-use Moose;
+use Mouse;
 use KiokuDB;
 use Railsish::CoreHelpers;
 use YAML::Any qw(LoadFile);
@@ -89,6 +89,6 @@ sub delete {
     $kioku->delete($obj);
 }
 
-__PACKAGE__->meta->make_immutable;
+no Mouse;
 
 1;

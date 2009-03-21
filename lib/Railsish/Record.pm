@@ -1,5 +1,5 @@
 package Railsish::Record;
-use Moose;
+use Mouse;
 use DateTime;
 
 use Railsish::Database;
@@ -43,6 +43,6 @@ sub delete {
     db->delete($self);
 }
 
-__PACKAGE__->meta->make_immutable;
+no Mouse;
 
 1;

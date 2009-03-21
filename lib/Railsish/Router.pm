@@ -1,5 +1,5 @@
 package Railsish::Router;
-use Moose;
+use Mouse;
 
 use Path::Router;
 
@@ -50,6 +50,6 @@ sub draw {
     return $APP_ROUTER;
 }
 
-__PACKAGE__->meta->make_immutable;
+no Mouse;
 
 1;

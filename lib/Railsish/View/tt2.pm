@@ -1,6 +1,6 @@
 package Railsish::View::tt2;
 
-use Moose;
+use Mouse;
 extends 'Railsish::View';
 
 use Template;
@@ -32,5 +32,7 @@ sub render {
 
     return $output;
 }
+
+no Mouse;
 
 1;

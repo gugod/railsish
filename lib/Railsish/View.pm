@@ -1,5 +1,5 @@
 package Railsish::View;
-use Moose;
+use Mouse;
 
 has template_root => (
     is => "ro",
@@ -61,7 +61,7 @@ sub resolve_template {
     return $file;
 }
 
-__PACKAGE__->meta->make_immutable;
+no Mouse;
 
 1;
 

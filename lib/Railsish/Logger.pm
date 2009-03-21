@@ -1,5 +1,5 @@
 package Railsish::Logger;
-use Moose;
+use Mouse;
 use Railsish::CoreHelpers ();
 use Log::Dispatch;
 use Log::Dispatch::File;
@@ -31,6 +31,6 @@ sub debug {
     );
 }
 
-__PACKAGE__->meta->make_immutable;
+no Mouse;
 
 1;
