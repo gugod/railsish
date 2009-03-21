@@ -12,7 +12,6 @@ Railsish::Router->draw(
     }
 );
 
-
 my $m = Railsish::Router->match("/photos/3")->mapping;
 is($m->{controller}, "photos");
 is($m->{action}, "show");

@@ -57,7 +57,7 @@ sub match {
         return $routers->{$method}->match($uri);
     }
     else {
-        for(qw(get post put delete)) {
+        for(qw(_named get post put delete)) {
             if (my $matched = $routers->{$_}->match($uri)) {
                 return $matched;
             }
@@ -75,6 +75,22 @@ sub uri_for {
             return "/$url";
         }
     }
+}
+
+use Lingua::EN::Inflect qw(PL_N);
+
+sub resources {
+    my ($self, $name) = @_;
+    $self = $APP_ROUTER unless ref($self);
+
+    $name =~ s/s$//;
+
+    my $resource  = PL_N($name, 1);
+    my $resources = PL_N($name, 42);
+
+    $self->$resources("/$resources", controller => $resources, action => "index");
+    $self->$resource("/$resources/:id", controller => $resources, action => "show");
+
 }
 
 # this one should be invoked like: Railsish::Router->draw;
