@@ -1,6 +1,6 @@
 #!/usr/bin/env perl -w
 use strict;
-use Test::More tests => 9;
+use Test::More tests => 2;
 
 use Railsish::Router;
 
@@ -24,7 +24,7 @@ Railsish::Router->draw(
 );
 
 {
-    my $matched = Railsish::Router->match("/photos", condition => { method => "get" });
+    my $matched = Railsish::Router->match("/photos", conditions => { method => "get" });
 
     if ($matched) {
         my $mapping = $matched->mapping;

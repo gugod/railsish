@@ -3,42 +3,70 @@ use Mouse;
 
 use Path::Router;
 
-has "router" => (
+has "routers" => (
     is => "rw",
-    isa => "Path::Router",
+    isa => "HashRef[Path::Router]",
     lazy_build => 1,
 );
 
-sub _build_router {
-    my ($self) = @_;
-    return Path::Router->new;
+sub _build_routers {
+    return {
+        get    => Path::Router->new,
+        post   => Path::Router->new,
+        put    => Path::Router->new,
+        delete => Path::Router->new
+    }
 }
 
 my $APP_ROUTER;
 
 sub connect {
-    my ($self, $urlish, @vars) = @_;
+    my ($self, $urlish, %vars) = @_;
     $self = $APP_ROUTER unless ref($self);
 
-    $self->router->add_route(
-	$urlish => (
-	    defaults => { @vars }
-	)
-    );
+    my $routers = $self->routers;
+
+    if (my $conditions = delete $vars{conditions}) {
+        my $method = lc($conditions->{method});
+        $routers->{$method}->add_route($urlish => (defaults => \%vars));
+    }
+    else {
+        for(qw(get post put delete)) {
+            $routers->{$_}->add_route($urlish => (defaults => \%vars));
+        }
+    }
+
 }
-
+use YAML;
 sub match {
-    my ($self, $uri) = @_;
+    my ($self, $uri, %args) = @_;
     $self = $APP_ROUTER unless ref($self);
 
-    $self->router->match($uri)
+    my $routers = $self->routers;
+    my $conditions = $args{conditions};
+    if ($conditions) {
+        my $method = lc($conditions->{method});
+        return $routers->{$method}->match($uri);
+    }
+    else {
+        for(qw(get post put delete)) {
+            if (my $matched = $routers->{$_}->match($uri)) {
+                return $matched;
+            }
+        }
+    }
 }
 
 sub uri_for {
-    my $self = shift;
+    my ($self, @args) = @_;
     $self = $APP_ROUTER unless ref($self);
 
-    $self->router->uri_for(@_);
+    my $routers = $self->routers;
+    for (qw(get post put delete)) {
+        if (my $url = $routers->{$_}->uri_for(@args)) {
+            return $url;
+        }
+    }
 }
 
 # this one should be invoked like: Railsish::Router->draw;
