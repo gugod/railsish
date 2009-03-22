@@ -49,7 +49,7 @@ sub resolve_template {
     my ($self, $thingy) = @_;
 
     my $dir = $self->template_root;
-    my $p = $self->template_root . "/" . $thingy . ".*.*";
+    my $p = quotemeta($self->template_root) . "/${thingy}.*.*";
 
     # XXX: TODO: Decide the precedence of multiple matches.
     my @files = glob($p);
