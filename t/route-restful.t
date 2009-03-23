@@ -1,6 +1,6 @@
 #!/usr/bin/env perl -w
 use strict;
-use Test::More tests => 12;
+use Test::More tests => 15;
 
 use Railsish::Router;
 
@@ -31,4 +31,11 @@ is($m->{id}, 3);
 is(Railsish::Router->photos_path, "/photos");
 is(Railsish::Router->photo_path( id => 3 ), "/photos/3");
 is(Railsish::Router->edit_photo_path( id => 3 ), "/photos/3/edit");
+
+
+$m = Railsish::Router->match("/photos/new")->mapping;
+is($m->{controller}, "photos");
+is($m->{action}, "new");
+is(Railsish::Router->new_photo_path, "/photos/new");
+
 

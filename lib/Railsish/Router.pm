@@ -101,6 +101,14 @@ sub resources {
 	@vars
     );
 
+    my $new = "new_${resource}";
+    $self->$new(
+        "/$resources/new",
+        controller => $resources,
+        action => "new",
+        @vars
+    );
+
     $self->$resource(
 	"/${resources}/:id",
 	controller => $resources,
@@ -138,6 +146,7 @@ sub AUTOLOAD {
 
     my @routes = $self->connect($urlish, %vars);
     my $route = $routes[0];
+
     $self->named_routes->{$name} = $route;
 
     Sub::Install::install_sub({
