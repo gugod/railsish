@@ -9,7 +9,7 @@ has "routers" => (
     lazy_build => 1,
 );
 
-has named_paths => (
+has named_routes => (
     is => "rw",
     isa => "HashRef",
     default => sub {{}}
@@ -17,7 +17,6 @@ has named_paths => (
 
 sub _build_routers {
     return {
-        _named => Path::Router->new,
         get    => Path::Router->new,
         post   => Path::Router->new,
         put    => Path::Router->new,
@@ -45,7 +44,6 @@ sub connect {
     return @routes;
 }
 
-use YAML;
 sub match {
     my ($self, $uri, %args) = @_;
     $self = $APP_ROUTER unless ref($self);
@@ -57,7 +55,7 @@ sub match {
         return $routers->{$method}->match($uri);
     }
     else {
-        for(qw(_named get post put delete)) {
+        for(qw(get post put delete)) {
             if (my $matched = $routers->{$_}->match($uri)) {
                 return $matched;
             }
@@ -70,10 +68,10 @@ sub uri_for {
     $self = $APP_ROUTER unless ref($self);
 
     my $routers = $self->routers;
-    for (qw(_named get post put delete)) {
+    for (qw(get post put delete)) {
         if (my $url = $routers->{$_}->uri_for(@args)) {
             return "/$url";
-        }
+	  }
     }
 }
 
@@ -88,18 +86,18 @@ sub resources {
     my $resource  = singularize($name);
     my $resources = pluralize($name);
 
-    $self->$resources("/$resources",
-		      controller => $resources,
-		      action => "index");
-
-    $self->$resource("/$resources/:id",
-		     controller => $resources,
-		     action => "show");
-
-    my $edit = "${resource}_edit";
+    my $edit = "edit_${resource}";
     $self->$edit("/$resources/:id/edit",
 		 controller => $resources,
 		 action => "edit");
+
+    $self->$resource("/${resources}/:id",
+		     controller => $resources,
+		     action => "show");
+
+    $self->$resources("/${resources}",
+		      controller => $resources,
+		      action => "index");
 
 }
 
@@ -122,7 +120,14 @@ sub AUTOLOAD {
     my $name = $AUTOLOAD;
     $name =~ s/^.*:://;
 
-    $self->routers->{_named}->add_route($urlish => (defaults => \%vars));
+
+    my $routers = $self->routers;
+    $routers->{get}->add_route($urlish => (defaults => \%vars));
+
+    my $routes = $routers->{get}->routes;
+    my $route = $routes->[$#$routes];
+
+    $self->named_routes->{$name} = $route;
 
     Sub::Install::install_sub({
         into => __PACKAGE__,
@@ -130,7 +135,9 @@ sub AUTOLOAD {
             my ($self, @args) = @_;
             $self = $APP_ROUTER unless ref($self);
 
-            return "/" . $self->routers->{_named}->uri_for(@args);
+	    my $temp_router = Path::Router->new;
+	    push @{$temp_router->routes}, $self->named_routes->{$name};
+	    return "/" . $temp_router->uri_for(@args);
         },
         as => "${name}_path"
     });
