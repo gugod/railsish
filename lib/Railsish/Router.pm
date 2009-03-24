@@ -30,15 +30,22 @@ sub connect {
     my ($self, $urlish, %vars) = @_;
     $self = $APP_ROUTER unless ref($self);
 
+    my $path_prefix = delete $vars{path_prefix};
+    if (defined $path_prefix) {
+	$urlish = $path_prefix . $urlish;
+    }
+
     my $routers = $self->routers;
     my @routes;
     if (my $conditions = delete $vars{conditions}) {
         my $method = lc($conditions->{method});
-        push @routes, $routers->{$method}->add_route($urlish => (defaults => \%vars));
+	$routers->{$method}->add_route($urlish => (defaults => \%vars));
+        push @routes, $routers->{$method}->routes->[-1];
     }
     else {
         for(qw(get post put delete)) {
-            push @routes, $routers->{$_}->add_route($urlish => (defaults => \%vars));
+	    $routers->{$_}->add_route($urlish => (defaults => \%vars));
+            push @routes, $routers->{$_}->routes->[-1];
         }
     }
     return @routes;
@@ -78,7 +85,7 @@ sub uri_for {
 use Railsish::TextHelpers qw(singularize pluralize);
 
 sub resources {
-    my ($self, $name) = @_;
+    my ($self, $name, @vars) = @_;
     $self = $APP_ROUTER unless ref($self);
 
     $name =~ s/s$//;
@@ -87,17 +94,26 @@ sub resources {
     my $resources = pluralize($name);
 
     my $edit = "edit_${resource}";
-    $self->$edit("/$resources/:id/edit",
-		 controller => $resources,
-		 action => "edit");
+    $self->$edit(
+	"/$resources/:id/edit",
+	controller => $resources,
+	action => "edit",
+	@vars
+    );
 
-    $self->$resource("/${resources}/:id",
-		     controller => $resources,
-		     action => "show");
+    $self->$resource(
+	"/${resources}/:id",
+	controller => $resources,
+	action => "show",
+	@vars
+    );
 
-    $self->$resources("/${resources}",
-		      controller => $resources,
-		      action => "index");
+    $self->$resources(
+	"/${resources}",
+	controller => $resources,
+	action => "index",
+	@vars,
+    );
 
 }
 
@@ -120,13 +136,8 @@ sub AUTOLOAD {
     my $name = $AUTOLOAD;
     $name =~ s/^.*:://;
 
-
-    my $routers = $self->routers;
-    $routers->{get}->add_route($urlish => (defaults => \%vars));
-
-    my $routes = $routers->{get}->routes;
-    my $route = $routes->[$#$routes];
-
+    my @routes = $self->connect($urlish, %vars);
+    my $route = $routes[0];
     $self->named_routes->{$name} = $route;
 
     Sub::Install::install_sub({
@@ -135,8 +146,13 @@ sub AUTOLOAD {
             my ($self, @args) = @_;
             $self = $APP_ROUTER unless ref($self);
 
+	    if (@args == 1 && ref($args[0]) eq 'HASH') {
+		@args = (%{$args[0]});
+	    }
+
 	    my $temp_router = Path::Router->new;
 	    push @{$temp_router->routes}, $self->named_routes->{$name};
+
 	    return "/" . $temp_router->uri_for(@args);
         },
         as => "${name}_path"
