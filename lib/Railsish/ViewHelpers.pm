@@ -23,7 +23,7 @@ sub stylesheet_link_tag {
 	    $file = "${dir}/${css}" unless -f $file;
 	    $file .= "?" . (stat($file))[9];
 	    $uri = $file;
-	    $uri =~ s/^$dir/\/stylesheets/;
+	    $uri =~ s/^\Q$dir\E/\/stylesheets/;
 	}
 
 	if ($uri) {
