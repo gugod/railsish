@@ -15,13 +15,13 @@ sub dispatch {
 
     my $mapping = $matched->mapping;
 
-    my $c = $mapping->{controller};
-    my $a = $mapping->{action} || "index";
+    my $controller = $mapping->{controller};
+    my $action = $mapping->{action} || "index";
 
-    $c = ucfirst(lc($c)) . "Controller";
-    my $sub = $c->can($a);
+    my $controller_class = ucfirst(lc($controller)) . "Controller";
+    my $sub = $controller_class->can($action);
 
-    die "action $a is not defined in $c." unless $sub;
+    die "action $action is not defined in $controller_class." unless $sub;
     my %params = %{$request->query_parameters};
 
     my $params = merge($request->parameters, $mapping);
@@ -31,6 +31,8 @@ sub dispatch {
     $Railsish::Controller::params = $params;
     $Railsish::Controller::request = $request;
     $Railsish::Controller::response = $response;
+    $Railsish::Controller::controller = $controller;
+    $Railsish::Controller::action = $action;
 
     $sub->();
 
