@@ -53,12 +53,17 @@ sub _build_kioku {
     );
 }
 
+use YAML;
 sub search {
-    my ($self, @args) = @_;
+    my ($self, %args) = @_;
     my $kioku = $self->kioku;
     my $kioku_scope = $kioku->new_scope;
 
-    $kioku->search({ (@args) });
+    if (ref($kioku->backend) eq "KiokuDB::Backend::Hash") {
+	my $class = delete $args{CLASS};
+	$kioku->simple_search(\%args);
+    }
+    return $kioku->search(\%args);
 }
 
 sub lookup {
