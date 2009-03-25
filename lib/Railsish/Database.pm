@@ -32,7 +32,8 @@ sub _build_config {
 	unless -f $file;
 
     my $all_config = LoadFile($file);
-    return $all_config->{development};
+    my $mode = railsish_mode;
+    return $all_config->{$mode};
 }
 
 sub _build_dsn {

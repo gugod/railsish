@@ -5,12 +5,16 @@ use strict;
 use warnings;
 
 use Exporter::Lite;
-our @EXPORT = qw(app_root logger);
+our @EXPORT = qw(railsish_mode app_root logger);
 
 use Log::Dispatch;
 use Log::Dispatch::File;
 
 use File::Spec::Functions;
+
+sub railsish_mode {
+    $ENV{RAILSISH_MODE} || "development"
+}
 
 sub app_root {
     catfile($ENV{APP_ROOT}, @_)
