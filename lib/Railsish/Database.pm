@@ -53,15 +53,15 @@ sub _build_kioku {
     );
 }
 
-use YAML;
 sub search {
     my ($self, %args) = @_;
     my $kioku = $self->kioku;
     my $kioku_scope = $kioku->new_scope;
 
     if (ref($kioku->backend) eq "KiokuDB::Backend::Hash") {
-	my $class = delete $args{CLASS};
-	$kioku->simple_search(\%args);
+	# With CLASS, it'll never find anything.
+	# Hash backend should only be used when testing, so this should be enough for now.
+	delete $args{CLASS};
     }
     return $kioku->search(\%args);
 }
