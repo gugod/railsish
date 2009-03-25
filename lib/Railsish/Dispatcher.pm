@@ -5,6 +5,7 @@ use Mouse;
 use Railsish::Router;
 use YAML::Any;
 use Hash::Merge qw(merge);
+use Encode;
 
 sub dispatch {
     my ($class, $request) = @_;
@@ -22,9 +23,12 @@ sub dispatch {
     my $sub = $controller_class->can($action);
 
     die "action $action is not defined in $controller_class." unless $sub;
-    my %params = %{$request->query_parameters};
+    my %params = %{$request->parameters};
+    for (keys %params) {
+        $params{$_} = Encode::decode_utf8( $params{$_} );
+    }
 
-    my $params = merge($request->parameters, $mapping);
+    my $params = merge(\%params, $mapping);
 
     my $response = HTTP::Engine::Response->new;
 
