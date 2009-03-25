@@ -1,5 +1,5 @@
 package Railsish::Record;
-use Mouse;
+use Moose;
 use DateTime;
 
 use Railsish::Database;
