@@ -4,10 +4,24 @@ package Railsish::Bootstrap;
 use strict;
 use warnings;
 use Railsish::CoreHelpers;
+use File::Spec::Functions;
+use Railsish::Router;
 
-sub read_config_route {
-    # XXX: is it to oldie to use .pl for config :-)
-    my $config = app_root(config => "route.pl");
+sub import {
+    unshift @INC, catdir(app_root, "app", "controllers");
+}
+
+sub load_configs {
+    my $routes = app_root(config => "routes.pl");
+    require $routes or die "Failed to load $routes";
+}
+
+sub load_controllers {
+    my $app_root = app_root;
+    my @controllers = glob("\Q${app_root}\E/app/controllers/*Controller.pm");
+    for(@controllers) {
+	require $_ or die "Failed to load $_\n";
+    }
 }
 
 1;

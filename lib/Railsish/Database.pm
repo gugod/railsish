@@ -54,11 +54,16 @@ sub _build_kioku {
 }
 
 sub search {
-    my ($self, @args) = @_;
+    my ($self, %args) = @_;
     my $kioku = $self->kioku;
     my $kioku_scope = $kioku->new_scope;
 
-    $kioku->search({ (@args) });
+    if (ref($kioku->backend) eq "KiokuDB::Backend::Hash") {
+	# With CLASS, it'll never find anything.
+	# Hash backend should only be used when testing, so this should be enough for now.
+	delete $args{CLASS};
+    }
+    return $kioku->search(\%args);
 }
 
 sub lookup {
