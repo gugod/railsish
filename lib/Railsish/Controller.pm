@@ -114,6 +114,11 @@ sub render {
 	$variables{$_} = \&{"Railsish::ViewHelpers::$_"};
     }
 
+    my $path_helpers = Railsish::PathHelpers->as_hash;
+    for (keys %$path_helpers) {
+	$variables{$_} = $path_helpers->{$_}
+    }
+
     $variables{title}    ||= ucfirst($controller) . " :: " .ucfirst($action);
     $variables{layout}   ||= "layouts/application.html.tt2";
     $variables{template} ||= "${controller}/${action}.html.tt2";

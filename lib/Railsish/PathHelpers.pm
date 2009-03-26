@@ -20,4 +20,6 @@ sub hash_for_helpers {
     return $ret;
 }
 
+*as_hash = *hash_for_helpers;
+
 1;
