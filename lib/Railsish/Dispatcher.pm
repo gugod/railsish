@@ -10,6 +10,10 @@ use Encode;
 sub dispatch {
     my ($class, $request) = @_;
     my $path = $request->path;
+
+    $path =~ s/\.([a-z]+)$//;
+    my $format = $1 || "html";
+
     my $matched = Railsish::Router->match($path);
 
     die "No routing rule for $path" unless $matched;
@@ -37,6 +41,7 @@ sub dispatch {
     $Railsish::Controller::response = $response;
     $Railsish::Controller::controller = $controller;
     $Railsish::Controller::action = $action;
+    $Railsish::Controller::format = $format;
 
     $sub->();
 
