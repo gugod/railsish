@@ -135,6 +135,7 @@ sub draw {
 }
 
 use Sub::Install;
+use Railsish::PathHelpers ();
 
 our $AUTOLOAD;
 sub AUTOLOAD {
@@ -149,6 +150,7 @@ sub AUTOLOAD {
 
     $self->named_routes->{$name} = $route;
 
+    my $helper_name = "${name}_path";
     Sub::Install::install_sub({
         into => __PACKAGE__,
         code => sub {
@@ -164,8 +166,18 @@ sub AUTOLOAD {
 
 	    return "/" . $temp_router->uri_for(@args);
         },
-        as => "${name}_path"
+        as => $helper_name
     });
+
+    warn "Install sub $helper_name to PathHelpers\n";
+    Sub::Install::install_sub({
+	into => "Railsish::PathHelpers",
+	as => $helper_name,
+	code => sub {
+	    return Railsish::Router->$helper_name(@_);
+	}
+    });
+    push @Railsish::PathHelpers::HELPERS, $helper_name;
 }
 
 __PACKAGE__->meta->make_immutable;

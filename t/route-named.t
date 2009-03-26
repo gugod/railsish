@@ -1,8 +1,9 @@
 #!/usr/bin/env perl -w
 use strict;
-use Test::More tests => 3;
+use Test::More tests => 5;
 
 use Railsish::Router;
+use Railsish::PathHelpers;
 
 Railsish::Router->draw(
     sub {
@@ -16,4 +17,9 @@ Railsish::Router->draw(
 is(Railsish::Router->login_path, "/login", "urlish with variables");
 is(Railsish::Router->user_path(id => 3), "/users/3", "urlish with variables");
 is(Railsish::Router->uri_for(controller => "users", action => "show", id => 3), "/users/3", "retrivie the uri with using names");
+
+Railsish::PathHelpers->install_helpers(__PACKAGE__);
+
+is(login_path(), "/login", "as helper");
+is(user_path(id => 3), "/users/3", "as helper");
 
