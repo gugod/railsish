@@ -11,4 +11,13 @@ sub install_helpers {
     }
 }
 
+sub hash_for_helpers {
+    my $ret = {};
+    for (@HELPERS) {
+	no strict;
+	$ret->{$_} = \&{__PACKAGE__ . "::" . $_};
+    }
+    return $ret;
+}
+
 1;

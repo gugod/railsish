@@ -169,7 +169,6 @@ sub AUTOLOAD {
         as => $helper_name
     });
 
-    warn "Install sub $helper_name to PathHelpers\n";
     Sub::Install::install_sub({
 	into => "Railsish::PathHelpers",
 	as => $helper_name,

@@ -1,6 +1,6 @@
 #!/usr/bin/env perl -w
 use strict;
-use Test::More tests => 5;
+use Test::More tests => 7;
 
 use Railsish::Router;
 use Railsish::PathHelpers;
@@ -22,4 +22,9 @@ Railsish::PathHelpers->install_helpers(__PACKAGE__);
 
 is(login_path(), "/login", "as helper");
 is(user_path(id => 3), "/users/3", "as helper");
+
+my $helpers = Railsish::PathHelpers->hash_for_helpers;
+is( ref($helpers->{login_path}), "CODE", 'retrieved helpers as a hash' );
+is( ref($helpers->{user_path}), "CODE", 'retrieved heplers as a hash' );
+
 
