@@ -29,14 +29,15 @@ sub import {
 
     push @{"$caller\::ISA"}, $class;
 
-    *{"$caller\::request"}    = \&request;
-    *{"$caller\::response"}   = \&response;
-    *{"$caller\::controller"} = \&controller;
-    *{"$caller\::action"}     = \&action;
-    *{"$caller\::format"}     = \&format;
-    *{"$caller\::params"}     = \&params;
-    *{"$caller\::render"}     = \&render;
+    *{"$caller\::request"}     = \&request;
+    *{"$caller\::response"}    = \&response;
+    *{"$caller\::controller"}  = \&controller;
+    *{"$caller\::action"}      = \&action;
+    *{"$caller\::format"}      = \&format;
+    *{"$caller\::params"}      = \&params;
+    *{"$caller\::render"}      = \&render;
     *{"$caller\::render_json"} = \&render_json;
+    *{"$caller\::render_xml"}  = \&render_xml;
 
     for (@Railsish::ControllerHelpers::EXPORT) {
         *{"$caller\::$_"} = *{"Railsish::ControllerHelpers::$_"};
@@ -147,6 +148,18 @@ sub render_json {
     my $out = $json->encode(\%variables);
 
     $response->headers->header('Content-Type' => 'text/x-json');
+    $response->body( Encode::encode_utf8($out) );
+}
+
+use XML::Simple;
+sub render_xml {
+    # still not write testing
+
+    my %variables = @_;
+
+    my $out = XMLout(\%variables);
+
+    $response->header->header("Content-Type" => "text/xml");
     $response->body( Encode::encode_utf8($out) );
 }
 
