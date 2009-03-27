@@ -28,6 +28,10 @@ sub create {
     response->body("create_post is rendered");
 }
 
+sub update {
+    response->body("update_post(@{[ params('id') ]}) is rendered");
+}
+
 package main;
 use Railsish::Router;
 
@@ -59,6 +63,7 @@ my @reqs = (
     [GET  => "/posts/3/edit", "edit_post(3) is rendered"],
 
     [POST => "/posts", undef, "xxx", "create_post is rendered"],
+    [PUT  => "/posts/3", undef, 'yyy', "update_post(3) is rendered"]
 );
 
 plan tests => 0+@reqs;
