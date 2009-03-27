@@ -111,7 +111,19 @@ sub resources {
 	"/${resources}/:id",
 	controller => $resources,
 	action => "show",
-	@vars
+	@vars,
+        conditions => {
+            method => "get"
+        }
+    );
+
+    $self->connect(
+        "/${resources}",
+        controller => $resources,
+        action => "create",
+        conditions => {
+            method => "post"
+        }
     );
 
     $self->$resources(
@@ -119,6 +131,9 @@ sub resources {
 	controller => $resources,
 	action => "index",
 	@vars,
+        conditions => {
+            method => "get"
+        }
     );
 
 }

@@ -1,8 +1,7 @@
 #!/usr/bin/env perl -w
 use strict;
 use warnings;
-
-use Test::More tests => 1;;
+use Test::More;
 
 package PostsController;
 use Railsish::Controller;
@@ -15,6 +14,18 @@ sub index {
 sub show {
     my $id = params("id");
     response->body("post($id) is rendered");
+}
+
+sub new {
+    response->body("new_post is rendered")
+}
+
+sub edit {
+    response->body("edit_post(@{[ params('id') ]}) is rendered")
+}
+
+sub create {
+    response->body("create_post is rendered");
 }
 
 package main;
@@ -41,8 +52,20 @@ my $engine = HTTP::Engine->new(
     }
 );
 
-my $response = $engine->run(
-    HTTP::Request->new(GET => "http://localhost/posts")
+my @reqs = (
+    [GET  => "/posts", "index is rendered"],
+    [GET  => "/posts/3", "post(3) is rendered"],
+    [GET  => "/posts/new", "new_post is rendered"],
+    [GET  => "/posts/3/edit", "edit_post(3) is rendered"],
+
+    [POST => "/posts", undef, "xxx", "create_post is rendered"],
 );
 
-is($response->content, "index is rendered");
+plan tests => 0+@reqs;
+
+for (@reqs) {
+    my $response_content = pop(@$_);
+    my $response = $engine->run(HTTP::Request->new(@$_));
+    is($response->content, $response_content);
+}
+

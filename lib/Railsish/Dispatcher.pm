@@ -14,7 +14,10 @@ sub dispatch {
     $path =~ s/\.([a-z]+)$//;
     my $format = $1 || "html";
 
-    my $matched = Railsish::Router->match($path);
+    my $method = lc($request->method);
+    my $matched = Railsish::Router->match(
+        $path, conditions => { method => $method }
+    );
 
     die "No routing rule for $path" unless $matched;
 
