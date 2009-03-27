@@ -76,6 +76,7 @@ use Template;
 use File::Spec::Functions;
 use Binding 0.04;
 use Perl6::Junction qw(any);
+use Railsish::PathHelpers ();
 
 sub build_stash {
     my $caller_vars = Binding->of_caller(2)->our_vars;

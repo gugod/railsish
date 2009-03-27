@@ -35,20 +35,21 @@ sub connect {
 	$urlish = $path_prefix . $urlish;
     }
 
+    my $conditions = delete $vars{conditions};
     my $routers = $self->routers;
-    my @routes;
-    if (my $conditions = delete $vars{conditions}) {
-        my $method = lc($conditions->{method});
-	$routers->{$method}->add_route($urlish => (defaults => \%vars));
-        push @routes, $routers->{$method}->routes->[-1];
+
+    return map {
+        $_->add_route($urlish => (defaults => \%vars));
+        $_->routes->[-1];
     }
-    else {
-        for(qw(get post put delete)) {
-	    $routers->{$_}->add_route($urlish => (defaults => \%vars));
-            push @routes, $routers->{$_}->routes->[-1];
-        }
+    map {
+        $routers->{$_};
     }
-    return @routes;
+    (
+        $conditions
+        ? lc($conditions->{method})
+        : qw(get post put delete)
+    );
 }
 
 sub match {
