@@ -3,3 +3,17 @@
 use strict;
 use warnings;
 use HTTP::Engine;
+
+my $engine = HTTP::Engine->new(                                                                                                                                                                           
+    interface => {
+        module => "ServerSimple",
+        args   => {
+            host => "localhost",
+            port => "3000",
+        },  
+        request_handler => \&SimpleApp::handle_request, # still need set
+    }
+);
+
+$engine->run();
+
