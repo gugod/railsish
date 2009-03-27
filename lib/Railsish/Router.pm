@@ -57,16 +57,11 @@ sub match {
     $self = $APP_ROUTER unless ref($self);
 
     my $routers = $self->routers;
-    my $conditions = $args{conditions};
-    if ($conditions) {
-        my $method = lc($conditions->{method});
-        return $routers->{$method}->match($uri);
-    }
-    else {
-        for(qw(get post put delete)) {
-            if (my $matched = $routers->{$_}->match($uri)) {
-                return $matched;
-            }
+    my $conditions = delete $args{conditions};
+
+    for($conditions ? lc($conditions->{method}) : qw(get post put delete)) {
+        if (my $matched = $routers->{$_}->match($uri)) {
+            return $matched;
         }
     }
 }
