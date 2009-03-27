@@ -88,8 +88,6 @@ sub resources {
     my ($self, $name, @vars) = @_;
     $self = $APP_ROUTER unless ref($self);
 
-    $name =~ s/s$//;
-
     my $resource  = singularize($name);
     my $resources = pluralize($name);
 
