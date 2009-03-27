@@ -42,7 +42,7 @@ use Railsish::Router;
 Railsish::Router->draw(
     sub {
         my ($map) = @_;
-	$map->resources("posts")
+        $map->resources("posts")
     }
 );
 
