@@ -19,7 +19,12 @@ sub dispatch {
         $path, conditions => { method => $method }
     );
 
-    die "No routing rule for $path" unless $matched;
+    my $response = HTTP::Engine::Response->new;
+    unless($matched) {
+        $response->body("internal server error");
+        $response->status(500);
+        return $response;
+    }
 
     my $mapping = $matched->mapping;
 
@@ -36,8 +41,6 @@ sub dispatch {
     }
 
     my $params = merge(\%params, $mapping);
-
-    my $response = HTTP::Engine::Response->new;
 
     $Railsish::Controller::params = $params;
     $Railsish::Controller::request = $request;

@@ -61,15 +61,20 @@ my $engine = HTTP::Engine->new(
 );
 
 my @reqs = (
+    # Good requests
     [GET  => "/posts", "index is rendered"],
     [GET  => "/posts/3", "post(3) is rendered"],
     [GET  => "/posts/new", "new_post is rendered"],
     [GET  => "/posts/3/edit", "edit_post(3) is rendered"],
-
     [POST => "/posts", undef, "xxx", "create_post is rendered"],
     [PUT  => "/posts/3", undef, 'yyy', "update_post(3) is rendered"],
-
     [DELETE => "/posts/3", "destroy_post(3) is rendered"],
+
+    # Bad requests
+    [GET  => "/posts/destroy/3", "internal server error"],
+    [GET  => "/posts/edit/3",    "internal server error"],
+    [POST => "/posts/show",      "internal server error"],
+    [PUT  => "/posts",           "internal server error"],
 );
 
 plan tests => 0+@reqs;
@@ -77,6 +82,10 @@ plan tests => 0+@reqs;
 for (@reqs) {
     my $response_content = pop(@$_);
     my $response = $engine->run(HTTP::Request->new(@$_));
-    is($response->content, $response_content);
+    is(
+        $response->content,
+        $response_content,
+        "$_->[0] $_->[1] => $response_content"
+    );
 }
 
