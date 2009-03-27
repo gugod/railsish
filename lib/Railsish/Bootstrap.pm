@@ -18,7 +18,7 @@ sub load_configs {
 
 sub load_controllers {
     my $app_root = app_root;
-    my @controllers = glob("\Q${app_root}\E/app/controllers/*Controller.pm");
+    my @controllers = glob("\Q${app_root}\E/app/controllers/*.pm");
     for(@controllers) {
 	require $_ or die "Failed to load $_\n";
     }
