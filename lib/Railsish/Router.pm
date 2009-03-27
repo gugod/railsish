@@ -129,6 +129,13 @@ sub resources {
         conditions => {method => "put"}
     );
 
+    $self->connect(
+        "/${resources}/:id",
+        controller => $resources,
+        action => "destroy",
+        conditions => {method => "delete"}
+    );
+
     $self->$resources(
 	"/${resources}",
 	controller => $resources,
