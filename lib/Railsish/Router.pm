@@ -30,9 +30,11 @@ sub connect {
     my ($self, $urlish, %vars) = @_;
     $self = $APP_ROUTER unless ref($self);
 
-    my $path_prefix = delete $vars{path_prefix};
-    if (defined $path_prefix) {
-	$urlish = $path_prefix . $urlish;
+    $urlish =~ s/^\/*/\//;
+
+    if (defined $vars{path_prefix}) {
+        $vars{path_prefix} =~ s/^\/*/\//;
+	$urlish = $vars{path_prefix} . $urlish;
     }
 
     my $conditions = delete $vars{conditions};
