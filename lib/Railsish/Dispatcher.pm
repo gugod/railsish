@@ -77,6 +77,8 @@ sub dispatch {
 
 sub _load_session {
     my ($request) = @_;
+
+    # XXX: the -key here should be given from app config.
     my $cipher = Crypt::CBC->new(-key => "railsish", -cipher => "Rijndael");
     my $session = {};
     my $session_cookie = $request->cookies->{_railsish_session};
