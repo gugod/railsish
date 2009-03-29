@@ -57,23 +57,7 @@ sub dispatch {
     $Railsish::Controller::action = $action;
     $Railsish::Controller::format = $format;
 
-    my $cipher = Crypt::CBC->new(
-        -key => "railsish",
-        -cipher => "Rijndael"
-    );
-
-    my $session = {};
-    my $session_cookie = $request->cookies->{_railsish_session};
-    if ($session_cookie) {
-        my $ciphertext_base64   = $session_cookie->value;
-        my $ciphertext_unbase64 = decode_base64($ciphertext_base64);
-        my $json = $cipher->decrypt($ciphertext_unbase64);
-        $session = decode_json($json);
-    }
-
-    logger->debug(Dump({session => $session}));
-
-    $Railsish::Controller::session = $session;
+    my $session = $Railsish::Controller::session = _load_session($request);
 
     logger->debug(Dump({
         request_path => $path,
@@ -86,18 +70,34 @@ sub dispatch {
 
     $sub->();
 
-
-    {
-        my $json = encode_json($session);
-        my $ciphertext = $cipher->encrypt($json);
-        my $ciphertext_base64 = encode_base64($ciphertext, '');
-        $response->cookies->{_railsish_session} = {
-            value => $ciphertext_base64
-        };
-    }
+    _store_session($response, $session);
 
     return $response;
+}
 
+sub _load_session {
+    my ($request) = @_;
+    my $cipher = Crypt::CBC->new(-key => "railsish", -cipher => "Rijndael");
+    my $session = {};
+    my $session_cookie = $request->cookies->{_railsish_session};
+    if ($session_cookie) {
+        my $ciphertext_base64   = $session_cookie->value;
+        my $ciphertext_unbase64 = decode_base64($ciphertext_base64);
+        my $json = $cipher->decrypt($ciphertext_unbase64);
+        $session = decode_json($json);
+    }
+    return $session;
+}
+
+sub _store_session {
+    my ($response, $session) = @_;
+    my $cipher = Crypt::CBC->new(-key => "railsish", -cipher => "Rijndael");
+    my $json = encode_json($session);
+    my $ciphertext = $cipher->encrypt($json);
+    my $ciphertext_base64 = encode_base64($ciphertext, '');
+    $response->cookies->{_railsish_session} = {
+        value => $ciphertext_base64
+    };
 }
 
 1;
