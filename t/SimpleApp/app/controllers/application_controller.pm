@@ -1,9 +1,7 @@
-package SimpleApp::ApplicationController;
-use base Railish::Controller;
-
+package ApplicationController;
 use strict;
 use warnings;
-
+use Railsish::Controller;
 
 
 1;

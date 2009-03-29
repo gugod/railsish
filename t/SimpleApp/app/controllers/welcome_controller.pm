@@ -1,7 +1,4 @@
-package SimpleApp::WelcomeController;
-use strict;
-use warnings;
-
+package WelcomeController;
 use Railsish::Controller;
 
 sub index {
@@ -13,5 +10,5 @@ sub here {
     render;
 }
 
-1;
 
+1;

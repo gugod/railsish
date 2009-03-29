@@ -1,7 +1,6 @@
 package Railsish::Dispatcher;
 # ABSTRACT: The first handler for requests.
 
-use Mouse;
 use Railsish::Router;
 use YAML::Any;
 use Hash::Merge qw(merge);
@@ -69,7 +68,7 @@ sub dispatch {
 
 }
 
-__PACKAGE__->meta->make_immutable;
+1;
 
 =head1 DESCRIPTION
 

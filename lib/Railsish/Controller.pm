@@ -45,35 +45,6 @@ sub import {
     }
 }
 
-sub dispatch {
-    (my $self, $request, $response) = @_;
-
-    my $path    = $request->path;
-
-    if ($path =~ s/\.(....?)$//) {
-        $format = $1
-    } else {
-        $format = "html";
-    }
-
-    my @args    = split "/", $path; shift @args; # discard the first undef
-    $controller = shift @args || 'welcome';
-    $action     = shift @args || 'index';
-
-    logger->debug(Dump({
-	request => $path,
-	controller => $controller,
-	action => $action,
-	params => $request->parameters
-    }));
-
-    if ($self->can($action)) {
-        $self->$action(@args);
-    }
-
-    return $response;
-}
-
 use Template;
 use File::Spec::Functions;
 use Binding 0.04;

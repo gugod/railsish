@@ -1,5 +1,5 @@
-package SimpleApp::IndexController;
-use base SimpleApp::ApplicationController;
+package IndexController;
+use Railsish::Controller;
 
 use warnings;
 use strict;

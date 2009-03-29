@@ -18,23 +18,6 @@ sub import {
     }
 }
 
-sub handle_request {
-    my $request = shift;
-    my $response = HTTP::Engine::Response->new;
-
-    my $path = $request->request_uri;
-
-    my ($controller) = $path =~ m{^/(\w+)}s;
-    $controller ||= 'welcome';
-
-    my $controller_class = $app_package . "::" . ucfirst($controller) . "Controller";
-    $controller_class->require or die $@;
-
-    $controller_class->dispatch($request, $response);
-
-    return $response;
-}
-
 1;
 
 =head1 DESCRIPTION

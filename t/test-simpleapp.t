@@ -7,21 +7,26 @@ BEGIN {
     unshift @INC, "$cwd/t/lib";
     unshift @INC, "$cwd/t/SimpleApp/lib";
 }
-
+use Test::More tests => 1;
+use Railsish::Dispatcher;
+use Railsish::Bootstrap;
 use HTTP::Engine;
 use HTTP::Request;
-use Test::More tests => 1;
-use SimpleApp;
 
 chdir("t/SimpleApp");
 use lib '../../lib';
 
 $ENV{APP_ROOT} = getcwd;
 
+Railsish::Bootstrap->load_configs;
+Railsish::Bootstrap->load_controllers;
+
 my $engine = HTTP::Engine->new(
     interface => {
 	module => 'Test',
-	request_handler => \&SimpleApp::handle_request
+	request_handler => sub {
+            Railsish::Dispatcher->dispatch(@_)
+        }
     }
 );
 
