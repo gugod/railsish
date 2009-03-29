@@ -3,6 +3,7 @@ use Mouse;
 use Railsish::CoreHelpers ();
 use Log::Dispatch;
 use Log::Dispatch::File;
+use Log::Dispatch::Screen;
 
 has 'logger' => (
     is => "rw",
@@ -19,6 +20,12 @@ sub _build_logger {
 	    name => "development",
 	    min_level => "debug",
 	    filename => Railsish::CoreHelpers::app_root(log => "development.log")));
+
+    $logger->add(
+	Log::Dispatch::Screen->new(
+	    name => "screen",
+	    min_level => "debug",
+            stderr => 1));
 
     return $logger;
 }

@@ -6,6 +6,7 @@ use Railsish::Router;
 use YAML::Any;
 use Hash::Merge qw(merge);
 use Encode;
+use Railsish::CoreHelpers;
 
 sub dispatch {
     my ($class, $request) = @_;
@@ -48,6 +49,13 @@ sub dispatch {
     $Railsish::Controller::controller = $controller;
     $Railsish::Controller::action = $action;
     $Railsish::Controller::format = $format;
+
+    logger->debug(Dump({
+	request => $path,
+	controller => $controller,
+	action => $action,
+	params => $request->parameters
+    }));
 
     $sub->();
 
