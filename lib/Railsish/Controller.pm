@@ -9,13 +9,14 @@ use Railsish::ControllerHelpers ();
 use Encode;
 use YAML qw(Dump);
 
-our ($request, $response, $controller, $action, $format, $params);
+our ($request, $response, $controller, $action, $format, $params, $session);
 
 sub request() { $request }
 sub response() { $response }
 sub controller() { $controller }
 sub action() { $action }
 sub format() { $format }
+sub session() { $session }
 
 sub params {
     my $name = shift;
@@ -35,6 +36,7 @@ sub import {
     *{"$caller\::action"}      = \&action;
     *{"$caller\::format"}      = \&format;
     *{"$caller\::params"}      = \&params;
+    *{"$caller\::session"}     = \&session;
     *{"$caller\::render"}      = \&render;
     *{"$caller\::render_json"} = \&render_json;
     *{"$caller\::render_xml"}  = \&render_xml;
@@ -165,6 +167,5 @@ sub redirect_to {
 sub index {
     render;
 }
-
 
 1;

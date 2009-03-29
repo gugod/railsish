@@ -55,14 +55,31 @@ sub dispatch {
     $Railsish::Controller::format = $format;
 
     logger->debug(Dump({
+        cookies => $request->cookies
+    }));
+
+    $Railsish::Controller::session = {@{
+        $request->cookies->{_session}->{value} || []
+    }};
+
+    logger->debug(Dump({
         request_path => $path,
         method => $method,
         controller => $controller,
         action => $action,
-        params => $request->parameters
+        params => $request->parameters,
+        session => $Railsish::Controller::session
     }));
 
     $sub->();
+
+    $response->cookies->{_session} = {
+        value => $Railsish::Controller::session
+    };
+
+    logger->debug(Dump({
+        session => $Railsish::Controller::session
+    }));
 
     return $response;
 
