@@ -15,6 +15,7 @@ sub _build_logger {
     my ($self) = @_;
 
     my $logger = Log::Dispatch->new;
+    return $logger unless exists $ENV{APP_ROOT};
 
     my $logdir = Railsish::CoreHelpers::app_root("log");
     if (-d $logdir) {
