@@ -53,9 +53,20 @@ sub javascript_include_tag {
 }
 
 sub link_to {
-    my ($label, $url, %attr) = @_;
+    my ($label, $url, @attr) = @_;
+
     my $attr = "";
+    my %attr = ();
+    if (@attr == 1 && ref($attr[0]) eq 'HASH') {
+        %attr = %{$attr[0]};
+    }
+
     if (%attr) {
+        if (my $confirm = delete $attr{confirm}) {
+            $attr{onclick} ||= "";
+            $attr{onclick} .= ";if(confirm(\"$confirm\")) { return true }; return false;";
+        }
+
 	$attr = qq{ $_="@{[ encode_entities($attr{$_}, '<>&"') ]}"} for keys %attr;
     }
     qq{<a href="$url"$attr>@{[ encode_entities($label, '<>&') ]}</a>};
