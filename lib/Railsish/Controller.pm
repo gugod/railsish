@@ -30,17 +30,10 @@ sub import {
 
     push @{"$caller\::ISA"}, $class;
 
-    *{"$caller\::request"}     = \&request;
-    *{"$caller\::response"}    = \&response;
-    *{"$caller\::controller"}  = \&controller;
-    *{"$caller\::action"}      = \&action;
-    *{"$caller\::format"}      = \&format;
-    *{"$caller\::params"}      = \&params;
-    *{"$caller\::session"}     = \&session;
-    *{"$caller\::render"}      = \&render;
-    *{"$caller\::render_json"} = \&render_json;
-    *{"$caller\::render_xml"}  = \&render_xml;
-    *{"$caller\::redirect_to"} = \&redirect_to;
+    for(qw(request response controller action format params
+           session render render_json render_xml redirect_to)) {
+        *{"$caller\::$_"} = *{"$_"};
+    }
 
     for (@Railsish::ControllerHelpers::EXPORT) {
         *{"$caller\::$_"} = *{"Railsish::ControllerHelpers::$_"};

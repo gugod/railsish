@@ -65,9 +65,7 @@ sub link_to {
     }
 
     if (%attr) {
-        $attr{onclick} ||= "";
-
-        my $js = "";
+        my $js;
         if ($attr{method} && $attr{method} eq 'delete') {
             $js = <<JS;
 var f = document.createElement('form');
@@ -81,8 +79,10 @@ JS
 
         if (my $confirm = delete $attr{confirm}) {
             $js ||= "return true;";
+            $attr{onclick} ||= "";
             $attr{onclick} .= ";if(confirm(\"$confirm\")) { $js }; return false;";
-        } else {
+        } elsif ($js) {
+            $attr{onclick} ||= "";
             $attr{onclick} .= "$js";
         }
 
