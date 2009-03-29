@@ -16,6 +16,11 @@ sub dispatch {
     my $format = $1 || "html";
 
     my $method = lc($request->method);
+    if ($method eq 'post') {
+        if (my $m = $request->param("_method")) {
+            $method = lc($m);
+        }
+    }
     my $matched = Railsish::Router->match(
         $path, conditions => { method => $method }
     );
@@ -51,10 +56,11 @@ sub dispatch {
     $Railsish::Controller::format = $format;
 
     logger->debug(Dump({
-	request => $path,
-	controller => $controller,
-	action => $action,
-	params => $request->parameters
+        request_path => $path,
+        method => $method,
+        controller => $controller,
+        action => $action,
+        params => $request->parameters
     }));
 
     $sub->();
