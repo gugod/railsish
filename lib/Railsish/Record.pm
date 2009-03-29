@@ -38,7 +38,7 @@ sub save {
     db->store($self);
 }
 
-sub delete {
+sub destroy {
     my ($self) = @_;
     db->delete($self);
 }

@@ -65,12 +65,28 @@ sub link_to {
     }
 
     if (%attr) {
-        if (my $confirm = delete $attr{confirm}) {
-            $attr{onclick} ||= "";
-            $attr{onclick} .= ";if(confirm(\"$confirm\")) { return true }; return false;";
+        $attr{onclick} ||= "";
+
+        my $js = "";
+        if ($attr{method} && $attr{method} eq 'delete') {
+            $js = <<JS;
+var f = document.createElement('form');
+f.style.display = 'none'; this.parentNode.appendChild(f);
+f.method = 'POST'; f.action = this.href;
+var m = document.createElement('input');
+m.setAttribute('type', 'hidden'); m.setAttribute('name', '_method');
+m.setAttribute('value', 'delete'); f.appendChild(m);f.submit();
+JS
         }
 
-	$attr = qq{ $_="@{[ encode_entities($attr{$_}, '<>&"') ]}"} for keys %attr;
+        if (my $confirm = delete $attr{confirm}) {
+            $js ||= "return true;";
+            $attr{onclick} .= ";if(confirm(\"$confirm\")) { $js }; return false;";
+        } else {
+            $attr{onclick} .= "$js";
+        }
+
+	$attr .= qq{ $_="@{[ encode_entities($attr{$_}, '<>&"') ]}"} for keys %attr;
     }
     qq{<a href="$url"$attr>@{[ encode_entities($label, '<>&') ]}</a>};
 }
