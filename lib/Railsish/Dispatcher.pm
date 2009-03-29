@@ -6,6 +6,9 @@ use YAML::Any;
 use Hash::Merge qw(merge);
 use Encode;
 use Railsish::CoreHelpers;
+use MIME::Base64;
+use Crypt::CBC;
+use JSON::XS::VersionOneAndTwo;
 
 sub dispatch {
     my ($class, $request) = @_;
@@ -54,13 +57,23 @@ sub dispatch {
     $Railsish::Controller::action = $action;
     $Railsish::Controller::format = $format;
 
-    logger->debug(Dump({
-        cookies => $request->cookies
-    }));
+    my $cipher = Crypt::CBC->new(
+        -key => "railsish",
+        -cipher => "Rijndael"
+    );
 
-    $Railsish::Controller::session = {@{
-        $request->cookies->{_session}->{value} || []
-    }};
+    my $session = {};
+    my $session_cookie = $request->cookies->{_railsish_session};
+    if ($session_cookie) {
+        my $ciphertext_base64   = $session_cookie->value;
+        my $ciphertext_unbase64 = decode_base64($ciphertext_base64);
+        my $json = $cipher->decrypt($ciphertext_unbase64);
+        $session = decode_json($json);
+    }
+
+    logger->debug(Dump({session => $session}));
+
+    $Railsish::Controller::session = $session;
 
     logger->debug(Dump({
         request_path => $path,
@@ -68,18 +81,20 @@ sub dispatch {
         controller => $controller,
         action => $action,
         params => $request->parameters,
-        session => $Railsish::Controller::session
+        session => $session
     }));
 
     $sub->();
 
-    $response->cookies->{_session} = {
-        value => $Railsish::Controller::session
-    };
 
-    logger->debug(Dump({
-        session => $Railsish::Controller::session
-    }));
+    {
+        my $json = encode_json($session);
+        my $ciphertext = $cipher->encrypt($json);
+        my $ciphertext_base64 = encode_base64($ciphertext, '');
+        $response->cookies->{_railsish_session} = {
+            value => $ciphertext_base64
+        };
+    }
 
     return $response;
 
