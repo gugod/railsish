@@ -1,11 +1,14 @@
 #!/usr/bin/env perl -w
 use strict;
-use Test::More test => 1;
+use Test::More tests => 1;
 
 use lib qw(lib t/SimpleApp);
 
-Railsish::Controller->can(render_xml);
+package FooController;
+use Railsish::Controller;
+
+package main;
+
+ok(FooController->can('render_xml'));
 
 
-TODO: {
-}
