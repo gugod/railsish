@@ -60,6 +60,9 @@ sub link_to {
     if (@attr == 1 && ref($attr[0]) eq 'HASH') {
         %attr = %{$attr[0]};
     }
+    elsif (@attr % 2 == 0) {
+        %attr = (@attr);
+    }
 
     if (%attr) {
         if (my $confirm = delete $attr{confirm}) {
