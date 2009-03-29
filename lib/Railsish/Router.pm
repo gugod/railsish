@@ -76,7 +76,7 @@ sub uri_for {
     for (qw(get post put delete)) {
         if (my $url = $routers->{$_}->uri_for(@args)) {
             return "/$url";
-	  }
+        }
     }
 }
 

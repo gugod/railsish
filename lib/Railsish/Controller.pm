@@ -38,6 +38,7 @@ sub import {
     *{"$caller\::render"}      = \&render;
     *{"$caller\::render_json"} = \&render_json;
     *{"$caller\::render_xml"}  = \&render_xml;
+    *{"$caller\::redirect_to"} = \&redirect_to;
 
     for (@Railsish::ControllerHelpers::EXPORT) {
         *{"$caller\::$_"} = *{"Railsish::ControllerHelpers::$_"};
@@ -162,6 +163,31 @@ sub render_xml {
 
     $response->header->header("Content-Type" => "text/xml");
     $response->body( Encode::encode_utf8($out) );
+}
+
+use Railsish::TextHelpers;
+
+sub redirect_to {
+    my @args = @_;
+    my $url;
+    my $current_controller = caller;
+
+    $current_controller = underscore($current_controller);
+    $current_controller =~ s/_controller$//;
+
+    if (@args == 1) {
+        $url = $args[0];
+    }
+    elsif (@args % 2 == 0) {
+        my %args = (@args);
+        $args{controller} ||= $current_controller;
+        $url = Railsish::Router->uri_for(%args);
+    }
+    else {
+        die("Unknown redirect_to parameters: @args");
+    }
+    $response->status(302);
+    $response->header(Location => $url);
 }
 
 # Provide a default 'index'
