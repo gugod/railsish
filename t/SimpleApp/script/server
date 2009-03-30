@@ -3,11 +3,14 @@
 use strict;
 use warnings;
 
-use lib map { "__FILE__/../" . $_ } qw(app/helpers app/controllers app/models lib);
+use File::Basename;
+use lib dirname(__FILE__) . "/../../../lib/";
+use lib map { dirname(__FILE__) . "/../" . $_ } qw(app/helpers app/controllers app/models lib);
+
+require "application_controller.pm";
+# TODO: Load all module in application.
 
 use HTTP::Engine;
-
-
 my $engine = HTTP::Engine->new(
 
     interface => {
