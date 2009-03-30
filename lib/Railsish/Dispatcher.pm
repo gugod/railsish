@@ -43,10 +43,8 @@ sub dispatch {
     my $sub = $controller_class->can($action);
 
     die "action $action is not defined in $controller_class." unless $sub;
-    my %params = %{$request->parameters};
-    for (keys %params) {
-        $params{$_} = Encode::decode_utf8( $params{$_} );
-    }
+
+    my %params = _preprocessed_parameters($request);
 
     my $params = merge(\%params, $mapping);
 
@@ -64,7 +62,7 @@ sub dispatch {
         method => $method,
         controller => $controller,
         action => $action,
-        params => $request->parameters,
+        params => $params,
         session => $session
     }));
 
@@ -73,6 +71,21 @@ sub dispatch {
     _store_session($response, $session);
 
     return $response;
+}
+
+sub _preprocessed_parameters {
+    my ($request) = @_;
+    my %params = %{$request->parameters};
+    for (keys %params) {
+        $params{$_} = Encode::decode_utf8( $params{$_} );
+
+        if (/^(\w+)\[(\w+)\]$/) {
+            $params{$1} ||= {};
+            $params{$1}->{$2}= delete $params{$_};
+        }
+    }
+
+    return %params;
 }
 
 sub _load_session {
