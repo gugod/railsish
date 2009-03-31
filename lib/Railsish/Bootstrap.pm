@@ -24,6 +24,14 @@ sub load_controllers {
     }
 }
 
+sub load_helpers {
+    my $app_root = app_root;
+    my @helpers = glob("\Q${app_root}\E/app_root/helpers/*.pm");
+    for (@helpers) {
+        require $_ or die "Failed to load $_, $!\n";
+    }
+}
+
 1;
 
 =head1 DESCRIPTION
