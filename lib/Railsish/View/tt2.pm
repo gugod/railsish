@@ -1,6 +1,6 @@
 package Railsish::View::tt2;
 
-use Mouse;
+use Any::Moose;
 extends 'Railsish::View';
 
 use Template;

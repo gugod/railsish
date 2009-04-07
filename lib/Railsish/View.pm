@@ -1,5 +1,5 @@
 package Railsish::View;
-use Mouse;
+use Any::Moose;
 
 has template_root => (
     is => "ro",

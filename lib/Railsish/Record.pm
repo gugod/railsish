@@ -1,5 +1,5 @@
 package Railsish::Record;
-use Moose;
+use Any::Moose;
 use DateTime;
 
 use Railsish::Database;
@@ -13,8 +13,8 @@ has created_at => (
 {
     my $db;
     sub db {
-	return $db if defined $db;
-	$db = Railsish::Database->new;
+        return $db if defined $db;
+        $db = Railsish::Database->new;
     }
 }
 
@@ -44,3 +44,4 @@ sub destroy {
 }
 
 __PACKAGE__->meta->make_immutable;
+

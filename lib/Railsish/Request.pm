@@ -1,5 +1,5 @@
 package Railsish::Request;
-use Mouse;
+use Any::Moose;
 
 extends 'HTTP::Engine::Request';
 

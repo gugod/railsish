@@ -1,7 +1,7 @@
 package Railsish::Database;
 # ABSTRACT: Talks to database
 
-use Mouse;
+use Any::Moose;
 use KiokuDB;
 use Railsish::CoreHelpers;
 use YAML::Any qw(LoadFile);
@@ -79,6 +79,7 @@ sub store {
     my ($self, $obj) = @_;
     my $kioku = $self->kioku;
     my $kioku_scope = $kioku->new_scope;
+
     $kioku->store($obj);
 }
 

@@ -1,5 +1,5 @@
 package Railsish::Logger;
-use Mouse;
+use Any::Moose;
 use Railsish::CoreHelpers ();
 use Log::Dispatch;
 use Log::Dispatch::File;

@@ -1,5 +1,5 @@
 package Railsish::Router;
-use Mouse;
+use Any::Moose;
 
 use Path::Router;
 
