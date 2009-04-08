@@ -91,19 +91,17 @@ JS
     qq{<a href="$url"$attr>@{[ encode_entities($label, '<>&') ]}</a>};
 }
 
-use Railsish::ControllerHelpers ();
-
 sub render_stickies {
-    my $out = "";
-    if (@Railsish::ControllerHelpers::notice_stickies > 0) {
-        $out = '<div id="notice_stickies" class="message notice">';
-        for (@Railsish::ControllerHelpers::notice_stickies) {
-            $out .= "<p>" . $_->{text} . "</p>";
-        }
-        $out .= "</div>";
-    }
+    my $session = &Railsish::Controller::session;
 
-    @Railsish::ControllerHelpers::notice_stickies = ();
+    return "" unless @{$session->{notice_stickies}} > 0;
+
+    my $out = '<div id="notice_stickies" class="message notice">';
+    while(my $stickie = pop @{$session->{notice_stickies}}) {
+        $out .= "<p>" . $stickie->{text} . "</p>";
+    }
+    $out .= "</div>";
+
     return $out;
 }
 
