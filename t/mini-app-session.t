@@ -2,8 +2,6 @@
 use strict;
 use warnings;
 use Moose ();
-
-use Moose;
 use Test::More tests => 4;
 
 package FooController;

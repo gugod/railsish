@@ -2,9 +2,8 @@
 
 use strict;
 use warnings;
-use Moose;
-use Test::More tests => 4;
 use Moose ();
+use Test::More tests => 4;
 
 package FooController;
 use Railsish::Controller;

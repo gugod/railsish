@@ -3,8 +3,6 @@ use strict;
 use Cwd;
 use Moose ();
 
-use Moose;
-
 BEGIN {
     my $cwd = getcwd;
     unshift @INC, "$cwd/t/lib";
