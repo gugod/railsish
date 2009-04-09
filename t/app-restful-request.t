@@ -2,6 +2,7 @@
 use strict;
 use warnings;
 use Test::More;
+use Moose ();
 
 package PostsController;
 use Railsish::Controller;

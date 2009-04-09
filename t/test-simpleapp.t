@@ -1,6 +1,7 @@
 #!/usr/bin/env perl -w
 use strict;
 use Cwd;
+use Moose ();
 
 BEGIN {
     my $cwd = getcwd;

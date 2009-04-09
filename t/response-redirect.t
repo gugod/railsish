@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use Test::More tests => 4;
+use Moose ();
 
 package FooController;
 use Railsish::Controller;
