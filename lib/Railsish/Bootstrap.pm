@@ -8,7 +8,8 @@ use File::Spec::Functions;
 use Railsish::Router;
 
 sub import {
-    unshift @INC, catdir(app_root, "app", "controllers");
+    my @dir = map { catdir(app_root, "app", $_ ) } qw(controllers helpers models);
+    unshift @INC, @dir;
 }
 
 sub load_configs {
