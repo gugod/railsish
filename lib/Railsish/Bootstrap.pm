@@ -17,11 +17,17 @@ sub load_configs {
     require $routes or die "Failed to load $routes";
 }
 
+use Module::Loaded;
+use Class::Implant;
 sub load_controllers {
     my $app_root = app_root;
     my @controllers = glob("\Q${app_root}\E/app/controllers/*.pm");
     for(@controllers) {
 	require $_ or die "Failed to load $_\n";
+        my $helper = $_ =~ s/Controller/Helpers/;
+        if ( is_loaded($helper) ) {
+          implant $helper, { into => $_ };
+        }
     }
 }
 
