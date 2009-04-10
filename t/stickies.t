@@ -46,7 +46,7 @@ my $engine = HTTP::Engine->new(
 use YAML;
 use Crypt::CBC;
 use MIME::Base64;
-use JSON::XS::VersionOneAndTwo;
+use JSON::XS;
 
 my $response = $engine->run(HTTP::Request->new(GET => "http://localhost/"));
 my $session_cookie = CGI::Cookie->parse($response->header('Set-Cookie'))->{_railsish_session};

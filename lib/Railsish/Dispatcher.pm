@@ -8,7 +8,7 @@ use Encode;
 use Railsish::CoreHelpers;
 use MIME::Base64;
 use Crypt::CBC;
-use JSON::XS::VersionOneAndTwo;
+use JSON::XS;
 
 sub dispatch {
     my ($class, $request) = @_;
