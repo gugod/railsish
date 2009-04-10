@@ -1,8 +1,8 @@
 #!/usr/bin/env perl -w
 use strict;
 use warnings;
-use Moose;
 use Test::More;
+use Moose ();
 
 package PostsController;
 use Railsish::Controller;
