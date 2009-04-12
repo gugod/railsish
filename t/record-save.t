@@ -19,8 +19,9 @@ use Railsish::Record;
 
 package Advertisement;
 use Moose;
+use MooseX::Types::DateTimeX qw(DateTime);
 # use Any::Moose;
-use Any::Moose qw(X::Types::DateTimeX) => ['DateTime']; 
+# use Any::Moose qw(X::Types::DateTimeX) => ['DateTime']; 
 
 extends 'Railsish::Record';
 
