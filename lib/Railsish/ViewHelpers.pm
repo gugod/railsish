@@ -94,7 +94,7 @@ JS
 sub render_stickies {
     my $session = &Railsish::Controller::session;
 
-    return "" unless @{$session->{notice_stickies}} > 0;
+    return "" unless @{$session->{notice_stickies}||[]} > 0;
 
     my $out = '<div id="notice_stickies" class="message notice">';
     while(my $stickie = pop @{$session->{notice_stickies}}) {
