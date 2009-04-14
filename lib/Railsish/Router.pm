@@ -1,6 +1,6 @@
 package Railsish::Router;
 use Any::Moose;
-
+use Railsish::CoreHelpers;
 use Path::Router;
 
 has "routers" => (
@@ -91,7 +91,7 @@ sub resources {
 
     my $edit = "edit_${resource}";
     $self->$edit(
-	"/$resources/:id/edit",
+	"/${resources}/:id/edit",
 	controller => $resources,
 	action => "edit",
 	@vars
@@ -134,6 +134,7 @@ sub resources {
         conditions => {method => "delete"}
     );
 
+    logger->debug("Installing /${resources} route");
     $self->$resources(
 	"/${resources}",
 	controller => $resources,
