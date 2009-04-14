@@ -72,10 +72,10 @@ my @reqs = (
     [DELETE => "/posts/3", "destroy_post(3) is rendered"],
 
     # Bad requests
-    [GET  => "/posts/destroy/3", "internal server error"],
-    [GET  => "/posts/edit/3",    "internal server error"],
-    [POST => "/posts/show",      "internal server error"],
-    [PUT  => "/posts",           "internal server error"],
+    [GET  => "/posts/destroy/3", "internal server error: unknown route"],
+    [GET  => "/posts/edit/3",    "internal server error: unknown route"],
+    [POST => "/posts/show",      "internal server error: unknown route"],
+    [PUT  => "/posts",           "internal server error: unknown route"],
 );
 
 plan tests => 0+@reqs;
@@ -89,4 +89,3 @@ for (@reqs) {
         "$_->[0] $_->[1] => $response_content"
     );
 }
-

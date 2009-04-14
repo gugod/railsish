@@ -66,7 +66,7 @@ sub render {
 	$variables{$_} = $stash->{$_};
     }
 
-    if (defined($format)) {
+    if (defined($format) && $format ne "html") {
         my $renderer = __PACKAGE__->can("render_${format}");
         if ($renderer) {
             $renderer->(%variables);
@@ -74,6 +74,7 @@ sub render {
         }
         $response->status(500);
         $response->body("Unknown format: $format");
+        return;
     }
 
     $variables{controller} = \&controller;

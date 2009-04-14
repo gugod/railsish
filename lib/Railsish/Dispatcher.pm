@@ -14,8 +14,10 @@ sub dispatch {
     my ($class, $request) = @_;
     my $path = $request->request_uri;
 
-    $path =~ s/\.([a-z]+)$//;
-    my $format = $1 || "html";
+    my $format = "html";
+    if ($path =~ s/\.([a-z]+)$//) {
+        $format = $1;
+    }
 
     my $method = lc($request->method);
     if ($method eq 'post') {
@@ -29,7 +31,7 @@ sub dispatch {
 
     my $response = HTTP::Engine::Response->new;
     unless($matched) {
-        $response->body("internal server error");
+        $response->body("internal server error: unknown route");
         $response->status(500);
         return $response;
     }
@@ -63,6 +65,7 @@ sub dispatch {
         controller => $controller,
         action => $action,
         params => $params,
+        format => $format,
         session => $session
     }));
 

@@ -1,7 +1,8 @@
 package Railsish::Database;
 # ABSTRACT: Talks to database
 
-use Any::Moose;
+# use Any::Moose;
+use Moose;
 use KiokuDB;
 use Railsish::CoreHelpers;
 use YAML::Any qw(LoadFile);
