@@ -12,7 +12,7 @@ use JSON::XS;
 
 sub dispatch {
     my ($class, $request) = @_;
-    my $path = $request->path;
+    my $path = $request->request_uri;
 
     $path =~ s/\.([a-z]+)$//;
     my $format = $1 || "html";
