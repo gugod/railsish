@@ -6,6 +6,7 @@ use YAML::Any;
 use Hash::Merge qw(merge);
 use Encode;
 use Railsish::CoreHelpers;
+use Railsish::TextHelpers qw(camelcase);
 use MIME::Base64;
 use Crypt::CBC;
 use JSON::XS;
@@ -41,7 +42,7 @@ sub dispatch {
     my $controller = $mapping->{controller};
     my $action = $mapping->{action} || "index";
 
-    my $controller_class = ucfirst(lc($controller)) . "Controller";
+    my $controller_class = camelcase(lc($controller)) . "Controller";
     my $sub = $controller_class->can($action);
 
     die "action $action is not defined in $controller_class." unless $sub;
