@@ -1,6 +1,9 @@
 package Railsish::Dispatcher;
 # ABSTRACT: The first handler for requests.
 
+use strict;
+use warnings;
+
 use Railsish::Router;
 use YAML::Any;
 use Hash::Merge qw(merge);
