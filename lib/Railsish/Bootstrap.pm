@@ -22,7 +22,10 @@ use Class::Implant;
 
 sub load_controllers {
     my $app_root = app_root;
-    my @controllers = glob("\Q${app_root}\E/app/controllers/*.pm");
+
+    my @controllers = glob("${app_root}/app/controllers/*.pm");
+
+    logger->debug("Loading controllers: ${app_root}/app/controllers/*.pm");
 
     for(@controllers) {
 	require $_ or die "Failed to load $_\n";
@@ -33,22 +36,24 @@ sub load_controllers {
         $helper =~ s/controllers/helpers/;
         $helper =~ s/Controller/Helpers/;
 
-        warn " ? $helper loaded?\n";
+        logger->debug(" - $controller_package loaded");
 
         if (-f $helper) {
             require $helper or die "Failed to load $helper\n";
 
             my $helper_package = $helper;
             $helper_package =~ s/.*\/(\w+).pm/$1/;
-            warn " - implant $helper_package";
+
             implant $helper_package, { into => $controller_package };
+
+            logger->debug("   - $helper_package loaded");
         }
     }
 }
 
 sub load_helpers {
     my $app_root = app_root;
-    my @helpers = glob("\Q${app_root}\E/app/helpers/*.pm");
+    my @helpers = glob("${app_root}/app/helpers/*.pm");
     for (@helpers) {
         require $_ or die "Failed to load $_, $!\n";
         warn " - (load_heplers) $_ loaded\n";
