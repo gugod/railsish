@@ -33,15 +33,17 @@ sub load_controllers {
         $helper =~ s/controllers/helpers/;
         $helper =~ s/Controller/Helpers/;
 
-        warn " ? $helper loaded?\n";
+        logger->debug(" - $controller_package loaded");
 
         if (-f $helper) {
             require $helper or die "Failed to load $helper\n";
 
             my $helper_package = $helper;
             $helper_package =~ s/.*\/(\w+).pm/$1/;
-            warn " - implant $helper_package";
+
             implant $helper_package, { into => $controller_package };
+
+            logger->debug("   - $helper_package loaded");
         }
     }
 }
