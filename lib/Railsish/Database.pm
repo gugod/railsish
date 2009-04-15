@@ -47,12 +47,19 @@ sub _build_kioku {
     my $self = shift;
     my $config = $self->config;
 
-    return KiokuDB->connect(
+    my $dir = KiokuDB->connect(
 	$self->dsn,
 	create => 1,
 	user => $config->{user},
 	password => $config->{password}
     );
+
+    # To avoid SQL-01004 error on MSSQL (String right truncation)
+    if ($self->dsn =~ /SQL Server/) {
+        $dir->backend->storage->dbh->{LongReadLen} = 512 * 1024
+    }
+
+    return $dir;
 }
 
 sub search {
