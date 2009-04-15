@@ -19,23 +19,39 @@ sub load_configs {
 
 use Module::Loaded;
 use Class::Implant;
+
 sub load_controllers {
     my $app_root = app_root;
     my @controllers = glob("\Q${app_root}\E/app/controllers/*.pm");
+
     for(@controllers) {
 	require $_ or die "Failed to load $_\n";
-        my $helper = $_ =~ s/Controller/Helpers/;
-        if ( is_loaded($helper) ) {
-          implant $helper, { into => $_ };
+        my $helper = $_;
+        my $controller_package = $_;
+
+        $controller_package =~ s/.*\/(\w+).pm/$1/;
+        $helper =~ s/controllers/helpers/;
+        $helper =~ s/Controller/Helpers/;
+
+        warn " ? $helper loaded?\n";
+
+        if (-f $helper) {
+            require $helper or die "Failed to load $helper\n";
+
+            my $helper_package = $helper;
+            $helper_package =~ s/.*\/(\w+).pm/$1/;
+            warn " - implant $helper_package";
+            implant $helper_package, { into => $controller_package };
         }
     }
 }
 
 sub load_helpers {
     my $app_root = app_root;
-    my @helpers = glob("\Q${app_root}\E/app_root/helpers/*.pm");
+    my @helpers = glob("\Q${app_root}\E/app/helpers/*.pm");
     for (@helpers) {
         require $_ or die "Failed to load $_, $!\n";
+        warn " - (load_heplers) $_ loaded\n";
     }
 }
 
