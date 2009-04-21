@@ -17,13 +17,9 @@ sub stylesheet_link_tag {
 	    $uri = $css;
 	}
 	else {
-	    my $dir = app_root("/public/stylesheets");
-
-	    my $file = "${dir}/${css}.css";
-	    $file = "${dir}/${css}" unless -f $file;
-	    $file .= "?" . (stat($file))[9];
-	    $uri = $file;
-	    $uri =~ s/^\Q$dir\E/\/stylesheets/;
+            $uri = $css;
+            $uri .= ".css" if $css !~ /\./;
+            $uri = "/stylesheets/$uri" if $css !~ /^\//;
 	}
 
 	if ($uri) {
