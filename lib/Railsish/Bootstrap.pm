@@ -9,7 +9,7 @@ use Railsish::Router;
 
 sub import {
     my @dir = map { catdir(app_root, "app", $_ ) } qw(controllers helpers models);
-    unshift @INC, @dir;
+    push @INC, @dir;
 }
 
 sub load_configs {
