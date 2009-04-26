@@ -48,7 +48,8 @@ use Crypt::CBC;
 use MIME::Base64;
 use JSON::XS;
 
-my $response = $engine->run(HTTP::Request->new(GET => "http://localhost/"));
+my $response = $engine->run(HTTP::Request->new(GET => "http://localhost/"), connection_info => { request_uri => "/" });
+
 my $session_cookie = CGI::Cookie->parse($response->header('Set-Cookie'))->{_railsish_session};
 
 # diag YAML::Dump($session_cookie);

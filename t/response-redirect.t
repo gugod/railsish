@@ -44,13 +44,19 @@ my $engine = HTTP::Engine->new(
 );
 
 {
-    my $response = $engine->run(HTTP::Request->new(GET => "http://localhost/foo/baz"));
+    my $response = $engine->run(
+        HTTP::Request->new(GET => "http://localhost/foo/baz"),
+        connection_info => { request_uri => "/foo/baz" }
+    );
     ok($response->is_redirect);
     is($response->header("Location"), "/foo/bar");
 }
 
 {
-    my $response = $engine->run(HTTP::Request->new(GET => "http://localhost/foo/bax"));
+    my $response = $engine->run(
+        HTTP::Request->new(GET => "http://localhost/foo/bax"),
+        connection_info => { request_uri => "/foo/bax" }
+    );
     ok($response->is_redirect);
     is($response->header("Location"), "/foo/bar");
 }

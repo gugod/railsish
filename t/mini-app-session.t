@@ -45,7 +45,10 @@ my $engine = HTTP::Engine->new(
     }
 );
 
-my $response = $engine->run(HTTP::Request->new(GET => "http://localhost/"));
+my $response = $engine->run(
+    HTTP::Request->new(GET => "http://localhost/"),
+    connection_info => { request_uri => "/" }
+);
 is($response->content, "Hi from Foo: 1");
 # diag $response->content;
 ok($response->header("Set-Cookie"));
@@ -60,7 +63,13 @@ my $cookies = $response->header("Set-Cookie");
 my $request = HTTP::Request->new(GET => "http://localhost/");
 $request->header(Cookie => $cookies);
 
-$response = $engine->run($request);
+$response = $engine->run(
+    $request,
+    connection_info => {
+        request_uri => "/"
+    }
+);
+
 is($response->content, "Hi from Foo: 2");
 # diag $response->content;
 

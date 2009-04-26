@@ -37,5 +37,10 @@ my $engine = HTTP::Engine->new(
     }
 );
 
-my $response = $engine->run(HTTP::Request->new(GET => "/some/stuff"));
+my $response = $engine->run(
+    HTTP::Request->new(GET => "/some/stuff"),
+    connection_info => {
+        request_uri => "/some/stuff"
+    }
+);
 
