@@ -21,14 +21,13 @@ Railsish::Router->draw(
         $map->connect("/:controller/:action/:id");
         $map->connect("/:controller/:action");
         $map->connect("/:controller", action => 'index');
-
         $map->connect("", controller => "foo");
     }
 );
 
 use Railsish::Dispatcher;
-use HTTP::Engine;
 
+use HTTP::Engine;
 use HTTP::Request;
 
 my $response = HTTP::Engine->new(
@@ -39,11 +38,9 @@ my $response = HTTP::Engine->new(
         }
     }
 )->run(
-    HTTP::Request->new(
-        GET => "http://localhost/foo/bar/baz"
-    )
+    HTTP::Request->new(GET => "http://localhost/foo/bar/baz"),
+    connection_info => { request_uri => "/foo/bar/baz" }
 );
 
 # The returned $response is a HTTP::Response object
-
 is($response->content, "baz");
