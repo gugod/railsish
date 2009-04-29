@@ -64,14 +64,15 @@ sub dispatch {
     my $session = $Railsish::Controller::session = _load_session($request);
 
     logger->debug(Dump({
-        request_path => $path,
-        method => $method,
-        controller => $controller,
-        action => $action,
-        params => $params,
-        format => $format,
-        session => $session
-    }));
+        request => {
+            request_path => $path,
+            method => $method,
+            controller => $controller,
+            action => $action,
+            params => $params,
+            format => $format,
+            session => $session
+        }}));
 
     $sub->();
 
