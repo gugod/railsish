@@ -82,7 +82,11 @@ plan tests => 0+@reqs;
 
 for (@reqs) {
     my $response_content = pop(@$_);
-    my $response = $engine->run(HTTP::Request->new(@$_));
+    my $response = $engine->run(
+        HTTP::Request->new(@$_),
+        connection_info => { request_uri => $_->[1] }
+    );
+    
     is(
         $response->content,
         $response_content,
