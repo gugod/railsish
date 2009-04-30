@@ -51,7 +51,7 @@ sub TO_JSON {
         my $n = $attr->{name};
         $h->{$attr->name} = "" . $self->$n;
     }
-    return to_json($h, { utf8 => 1});
+    return $h;
 }
 
 __PACKAGE__->meta->make_immutable;
