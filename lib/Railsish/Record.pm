@@ -43,5 +43,16 @@ sub destroy {
     db->delete($self);
 }
 
+use JSON;
+sub TO_JSON {
+    my ($self) = @_;
+    my $h = {};
+    for my $attr ( $self->meta->get_all_attributes ) {
+        my $n = $attr->{name};
+        $h->{$attr->name} = "" . $self->$n;
+    }
+    return $h;
+}
+
 __PACKAGE__->meta->make_immutable;
 

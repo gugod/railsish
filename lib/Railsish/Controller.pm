@@ -113,6 +113,7 @@ sub render_json {
 
     my $json = JSON->new;
     $json->allow_blessed(1);
+    $json->convert_blessed(1);
 
     my $out = $json->encode(\%variables);
 
